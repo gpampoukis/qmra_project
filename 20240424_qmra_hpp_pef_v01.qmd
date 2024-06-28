@@ -17,7 +17,7 @@ bibliography: qmra_hpp_pef.bib
 
 # Statement of purpose
 
-The purpose of this QMRA is to estimate the impact of replacing conventional pasteurization processing with Pulsed Electric Fields or High-Pressure processing on the annual cases of illness caused by *Escherichia coli* after consuming "pasteurized" refrigerated fruit juice (from fresh fruits and not from concenctrates). To accurately integrate the effect of processing (thermal, high-pressure, pulsed electric field) on the annual cases of illness, the approach of meta-analysis models (meta-regression) was used to quantitatively integrate the findings of many individual studies [@den_besten_meta-analysis_2012].
+The purpose of this QMRA is to estimate the impact of replacing conventional pasteurization processing with Pulsed Electric Fields or High-Pressure processing on the annual cases of illness caused by *Escherichia coli* after consuming "pasteurized" refrigerated fruit juice (from fresh fruits and not from concentrates). To accurately integrate the effect of processing (thermal, high-pressure, pulsed electric field) on the annual cases of illness, the approach of meta-analysis models (meta-regression) was used to quantitatively integrate the findings of many individual studies [@den_besten_meta-analysis_2012].
 
 # Scope of QMRA
 
