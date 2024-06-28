@@ -1,0 +1,312 @@
+---
+title: "20240228_pef_qmra_v01"
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  error: false
+---
+
+# PEF
+
+# A case study for milk treatment
+
+## Initial concentration
+
+We will define our initial concentration as a uniform distribution over 0-1 log CFU/g. It has some variability which is defined in level 0.
+
+```{r}
+#| eval: true
+#| echo: false
+#| include: false
+# We first load our libraries
+library(tidyverse)
+library(biorisk)
+```
+
+```{r}
+logN0 <- Uniform$new("logN0", # A uniform distribution
+                 level = 0)$
+  map_input("min",
+            Constant$new("logN0_min", 0) # with a constant min. value
+)$
+  map_input ("max",
+             Constant$new("logN0_max", 1) # and a constant max. value
+)
+```
+
+## Inactivation using PEF processing
+
+Moving to the next step of the microbial inactivation, we need to define our inactivation model, which in our case is a log-linear primary inactivation model ($\log_{10}N = \log_{10}N_0 - k \cdot t$). We also want to define a secondary model for our inactivation rate i.e., the *k* parameter. For that we will use a random intercept of a constant value i.e., -0.1811, and a slope of 0.0069 ($k = -0.01811 + 0.0069 \cdot C$). We need also to define *C* which in our case will be set at 50. Then we will assume that our slope of 0.069 has variability (level = 0), described by a normal distribution with mean of 0.0069 and a standard deviation of 0.001.
+
+Let's start with the secondary model:
+
+```{r}
+
+# Define the C parameter of our equation
+chlorine <- Constant$new("chlorine", 50)
+
+#Define the intercept and the slope of our secondary model of our linear inactivation model. the slope is a normal distribution which is firstly defined
+
+k_slope <- Normal$new("k_slope", level = 1)$
+  map_input("mu", Constant$new("k_slope_mu", 0.0069))$
+  map_input("sigma", Constant$new("k_slope_sigma", 0.0001))
+
+k_chlorine <- LinealModel$new("k_chlorine")$
+  map_input("a",
+            Constant$new("k_intercept", -0.1811)
+            )$
+  map_input("b", k_slope)$
+  map_input("x", chlorine)
+```
+
+```{r}
+#| eval: false
+#| echo: false
+plot_model(k_chlorine)
+
+```
+
+For our primary model we will use the processing time of 20 seconds, and we will incorporate the secondary model that we have just defined. The log-linear inactivation parameterized based on the inactivation rate *k* is named LogLinInactivation_k in biorisk:
+
+```{r}
+t_chlorine <- Constant$new("t_chlorine", 20) # the treatment time (s)
+
+inactivation <- LogLinInactivation_k$new("Treatment")$
+  map_input("logN0", logN0)$ #We map logN0 to the initial count defined before
+  map_input("k", k_chlorine)$
+  map_input("t", t_chlorine)
+
+```
+
+```{r}
+#| eval: false
+#| echo: false
+plot_model(inactivation)
+```
+
+## Growth during storage
+
+In this section we will describe the microbial growth during storage using the exponential growth model with stationary phase (bilinear model):
+
+$$
+\log N = 
+\begin{cases} 
+\log N_0 + \mu \cdot t & \text{if } \log N_0 + \mu \cdot t < \log N_{\text{max}} \\
+\log N_{\text{max}} & \text{otherwise}
+\end{cases}
+$$
+
+with the growth rate given by the Ratkowsky model:
+
+$$
+\mu = b\cdot(T - T_{\text{min}})^2
+$$ As above, we first need to define the secondary model. The Ratkowsky model has three inputs: treatment temperature, *T*~min~, and *b*. For the temperature, we assign a normal distribution that represents uncertainty (level = 1) with expected value (mean) of 6.35 and a standard deviation of 2.83.
+
+```{r}
+temp_distrib <- Normal$new("temp_distrib",
+                           level = 1)$ # a normal distribution
+  map_input("mu", 
+            Constant$new("mu_temp_distrib", 6.35) # with a constant mean
+)$
+  map_input("sigma",
+            Constant$new("sd_temp_distrib", 2.83) # and a constant variance
+)
+```
+
+Then, we define the Ratkowsky model, mapping the temperature to the element we just defined. In this case, we assume no variability or uncertainty in the model parameters, and the *b* is assumed to be 0.014 and *T~min~* to be 1.6.
+
+```{r}
+mu_distrib <- Ratkowsky_model$new("mu_distrib")$ #the Ratkowsky seondary model
+  map_input("b",
+            Constant$new("b_distrib", 0.0144) #with constant b
+)$
+  map_input("Tmin",
+            Constant$new("Tmin_distrib", 1.6) # and constant Tmin
+)$
+  map_input("temperature",
+            temp_distrib
+)
+
+```
+
+```{r}
+#| eval: false
+#| echo: false
+plot_model(mu_distrib)
+```
+
+Now, we can go back to the primary growth model and integrate our secondary model there. As mentioned above, the model to be used is the ExponentialGrowthNmax. The only input left to assign is the storage time, for which we will assume an exponential distribution with rate parameter 1/29.
+
+```{r}
+time_distrib <- Exponential$new("time_distrib")$ # an exponential distribution
+  map_input("rate",
+            Constant$new("rate_time_distrib", 1/29)# with constant rate parameter
+)
+```
+
+Now, we have everything and we will implement the ExponentialGrowthNmax as our primary model. For the treatment time, we will use the storage time that we just defined. The growth rate $\mu$ is already mapped to the output of the Ratkowsky model. Then, the initial concentration at storage needs to be mapped to the output of the inactivation model (to be our reference logN0 for this stage). Finally, we will define a constant *N~max~* of 8 log CFU/g.
+
+```{r}
+growth_distrib <- ExponentialGrowthNmax$new("growth_distrib")$
+  map_input("t",
+            time_distrib # we assign the element from above to define the time
+)$
+  map_input("mu",
+            mu_distrib # we assign the element from above to define the growth rate
+)$
+  map_input("logN0",
+            inactivation # and logN0 to the output of the chlorine now
+)$
+  map_input("logNmax",
+            Constant$new("logNmax", 8) # A constant logNmax
+            )
+
+```
+
+```{r}
+#| eval: false
+#| echo: false
+plot_model(growth_distrib)
+```
+
+The next step is to convert the microbial concentration (in log CFU/g) to microbial dose cosumed. For this, we will use the Concentration2Dose element. This element considers the fact that the dose is a sampling process (i.e., the output is a discrete number of cells). (In order to obtain continuous values for the dose (e.g., a dose of 0.23 cells), one must use Concentration2Dose_continous).
+
+We have two inputs for the dose response model i.e., the microbial exposure at exposure and the serving size. For the latter, we use a uniform distribution that represents uncertainty (level = 1). For the microbial concentration, we map the output of the growth element from above.
+
+```{r}
+serving_size <- Uniform$new("size", level = 1)$
+  map_input("min", Constant$new("min_size", 200))$
+  map_input("max", Constant$new("max_size", 500))
+
+consumer_dose <- Concentration2Dose$new("dose")$
+  map_input("logN", growth_distrib)$
+  map_input("size", serving_size)
+```
+
+## Risk characterization
+
+For this stage we need first to define a dose response model. We will use the exponential dose response model with $r = 10^{-12}$, assuming contant pathogen-host survival probability.
+
+```{r}
+
+Pill <- DoseResponse_Exponential$new("Pill")$
+  map_input("r", Constant$new("r_dr", 1e-12))$
+  map_input("dose", consumer_dose)
+
+```
+
+Then, we can estimate the number of cases. For that, **biorisk** includes the Pill2Cases_N element to convert from probability of illness to number of cases.This element considers for each Monte Carlo iteration that the nservings have the same probability of illness. On the other hand, the element Pill2Cases_1 considers a single serving per Pill . In this case, we will make the calculations per $10^{12}$ servings.
+
+```{r}
+
+cases <- Pill2Cases_N$new("cases")$
+  map_input("Pill", Pill)$
+  map_input("servings", Constant$new("n_servings", 1e12))
+
+```
+
+## Checks, simulation and visualization
+
+Let's check our dependencies to see if we made any mistake in the dependencies of the model, regarding the consistency of the variable names.
+
+```{r}
+#| eval: false
+#| echo: false
+cases$check_input_types(recursive = TRUE)
+# Warning: In element Pill: the element expects discrete for input dose. Got continuous instead from dose. We cannot have 321.1 CFU but we made this simplification, this would work if we would take the discrete models of the other case study
+```
+
+```{r}
+#| eval: false
+#| echo: false
+plot_model(cases)
+```
+
+We can start with the simplest approach to see what would be the approximate, discrete prediction of the cases per $10^{12}$ servings.
+
+```{r}
+cases$point_estimate()
+```
+
+### Simulation as a 1D Monte Carlo
+
+Then, we continue with our 1D Monte Carlo:
+
+```{r}
+cases$simulate(100000, seed = 241)
+```
+
+We can now visualize the number of cases per $10^{12}$ servings, as a histogram. We will use the log transform due to the heavy tail, but this removes also the 0s i.e., the simulations that lead to 0 cases. Therefore we also need to know how many are the 0s in our simulations (it's in the warning created). We will also add a discrete line with the approximate as estimated before. (Note that this is quite biased with respect to the histogram. The reasons for this is the use of asymmetric distributions and the nonlinear models.)
+
+```{r}
+cases$histogram(add_discrete = TRUE) + scale_x_log10()
+
+```
+
+Then, we can also visualize other elements such as the microbial concentration at the end of storsage as a density plot (again with a discrete dashed line, "TRUE").
+
+```{r}
+growth_distrib$density_plot(TRUE)
+```
+
+Now we will take a look at the quantiles
+
+```{r}
+quantile_table(cases, chosen = c("cases", "Pill", "dose", "growth_distrib"),
+               probs = c(0.50, 0.90, 0.99))
+```
+
+It would also be nice to monitor the variation of the microbial concentration on each step. We will do this with three ways namely, box plot, violin plot and density plot.
+
+::: panel-tabset
+#### Box plot
+
+```{r}
+#| label: plot-E
+#| fig-height: 8
+#| fig-width: 12
+
+plot_outputs(cases,
+             chosen = c("logN0", "Treatment", "growth_distrib"))
+```
+
+#### Violin plot
+
+```{r}
+plot_outputs(cases,
+             chosen = c("logN0", "Treatment", "growth_distrib"),
+             type = "violin")
+```
+
+#### Density plot
+
+```{r}
+plot_outputs(cases,
+             chosen = c("logN0", "Treatment", "growth_distrib"),
+             type = "density")
+```
+:::
+
+### Simulation as a 2D Monte Carlo
+
+For the 2D-MC simulation we need two inputs, the number of simulations for level 0 (variability) and the number of simulations for level 1 (uncertainty). We will use 1000 iterations for variability and 100 for uncertainty. We will visualize the results for growth distribution with a density plot that compares the distribution from the variability (blue) with the distribution including all sources of variation (variability & uncertainty)(grey).
+
+```{r}
+cases$simulate_2D(1000, 100, seed = 792)
+growth_distrib$density_plot_2D()
+```
+
+Also, we will visualize the cumulative distribution where the line represents the level 0 (variability) and the ribbon the additional variation due to the uncertainty level.
+
+```{r}
+growth_distrib$cummulative_plot_2D()
+```
+
+And our quantiles, as we did before. In this case, the quantiles are calculated both under level 0 (variability) and over the complete model (variability & uncertainty). Note that the quantiles for level 1 are practically identical to those calculated above for the 1D Monte Carlo simulation.:
+
+```{r}
+quantile_table_2D(cases, chosen = c("cases", "Pill", "dose", "growth_distrib"),
+               probs = c(0.50, 0.90, 0.99))
+```

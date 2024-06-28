@@ -1,0 +1,636 @@
+---
+title: "qmra_pef_static_trial"
+format:
+  html:
+    embed-resources: true
+  #docx:
+    #number-sections: true
+number-sections: true
+editor: visual
+execute: 
+  error: false
+
+bibliography: qmra_hpp_pef.bib
+---
+
+# **The effect of non-thermal processing on quantitative microbial risk assessment (QMRA)** {.unnumbered}
+
+# Statement of purpose
+
+The purpose of this QMRA is to estimate the impact of replacing conventional pasteurization processing with Pulsed Electric Fields or High-Pressure processing on the annual cases of illness caused by *Escherichia coli* after the consumption of fruit juice. To accurately integrate the effect of processing (thermal, high-pressure, pulsed electric field) on the annual cases of illness, the approach of meta-analysis models (meta-regression) was used to quantitatively integrate the findings of many individual studies [@den_besten_meta-analysis_2012].
+
+# A case study for juice treatment with HPP - Model definition
+
+# Background
+
+-   According to the FDA, The 5-log pathogen reduction must
+
+-   be accomplished for the microbe you identify as the "pertinent microorganism," which is the most resistant microorganism of public health significance that is likely to occur in the juice, e.g., *E. coli* O157:H7,
+
+-   take place in one facility just prior to or after packaging,([2](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/guidance-industry-juice-hazard-analysis-critical-control-point-hazards-and-controls-guidance-first#ftn2)) and
+
+-   be applied directly to the juice, except for citrus juices.
+
+The "pertinent microorganism" is the most resistant microorganism of public health significance that is likely to occur in the juice and is the pathogen that you must target for the 5-log pathogen reduction treatment (21 CFR 120.24(a)). By choosing the most resistant pathogen as your target, you are also treating the product for all other pathogens that are less resistant to the means of treatment.
+
+One way to identify the pertinent microorganism for your juice is to consider whether there have been any illness outbreaks associated with this type of juice, and what microorganisms have caused the outbreaks. If certain pathogens have been demonstrated, i.e., through outbreaks, to be potential contaminants in certain juices, then the pertinent microorganism for your process typically should be one of these pathogens.
+
+For example, Salmonella species have been the cause of several illness outbreaks related to orange juice and may be considered the "pertinent microorganism" for orange juice products. E. coli O157:H7, a bacterial pathogen, and Cryptosporidium parvum, a protozoan parasite, have both been the cause of outbreaks in untreated apple juice, and both should be identified as potential hazards in a hazard analysis for apple juice. Which of these two pathogens is determined to be the pertinent microorganism will depend upon which of the two is most resistant to the means of treatment, e.g., pasteurization, UV radiation, that you will use to achieve the 5-log reduction of pathogens that is required under the juice HACCP regulation. The pertinent microorganism for apple juice is discussed further in section V. C. 5.0.
+
+Although Listeria monocytogenes has not been linked specifically to an illness outbreak from juice, it is ubiquitous in nature. For this reason, we recommend that Listeria monocytogenes be considered as a possible "pertinent microorganism" for juices that have not been associated with illness outbreaks caused by Salmonella species, E. coli O157:H7, or Cryptosporidium parvum. Alternatively, for juices other than apple juice, you may generically designate "vegetative bacterial pathogens" as your pertinent microorganism if your juice is an acidic juice, i.e., pH of 4.6 or less, no illness outbreaks believed to have been caused by non-bacterial pathogens have been attributed to that juice type, and you are processing your juice using a process that has been validated to achieve a 5-log reduction for Salmonella species, E. coli O157:H7, and Listeria monocytogenes, such as the general process which is discussed in section V.C.5.0 under "Process Validation."
+
+Low-acid juices, such as carrot juice, that are distributed under refrigeration, and are not subject to the Low Acid Canned Foods regulation (21 CFR Part 113) may pose hazards associated with spore forming pathogens, specifically, toxins of non-proteolytic and proteolytic strains of Clostridium botulinum. Control measures for such juices are likely to involve multiple measures, e.g., a combination of a process step to destroy the non-proteolytic spores and measures to ensure that "Keep Refrigerated" labeling is used for the juice if the juice does not receive a treatment sufficient to destroy the proteolytic spores (Destruction of spores of the proteolytic strains requires a more severe heat treatment but germination and growth of these spores may be prevented by keeping the product under refrigeration during its lifecycle. Destruction of spores of the non-proteolytic strains requires a less severe heat treatment, but these spores can germinate and produce toxin even under refrigerated storage conditions) [@nutrition_guidance_2024].
+
+## Initial concentration
+
+We will assume that the microorganism of interest is *Escherichia coli.* We will define our initial concentration as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. We assume that this concentration can be described by a uniform distribution with minimum and maximum with equal probabilities to be 2 or 3 log~10~ CFU/ml, respectively. It has some variability which is defined in level 0.
+
+```{r}
+
+#| eval: true
+
+#| echo: false
+
+#| include: false
+
+# We first load our libraries
+
+library(tidyverse)
+
+library(biorisk)
+
+```
+
+## Inactivation using thermal processing
+
+Moving to the next step of the microbial inactivation during thermal processing, we need to define our inactivation model, which in our case is a log-linear primary inactivation model:
+
+\$\$
+
+log\_{10}N = log\_{10}N_0 - frac{{ t}}{{ D}}
+
+\$\$ {#eq-primary}
+
+In order to assess the effect of temperature on the *D*-value we will also use a log-linear secondary model:
+
+\$\$
+
+D = D\_{ref} cdot 10\^{frac{(T\_{ref} - T)}{z}}
+
+quad text{OR} quad
+
+log(D) = log(D\_{ref}) + frac{(T\_{ref} - T)}{z}
+
+\$\$ {#eq-secondary}
+
+For that we will use a secondary log-linear model that was developed for thermal processing and *E. coli*, as defined from our meta-analysis with a $log_{10}D_{ref}$ of -0.67 at $T_{ref} = 70^circ C$, a $sigma$ of 0.62 and student $t-value$ of 1.97:
+
+In the prediction we could use the worst case scenario i.e., the upper limit of the $log_{10}D_{ref}$:
+
+\$\$
+
+log\_{10}D\_{refupper} = log\_{10}D\_{ref} + t cdot sigma
+
+\$\$
+
+```{r}
+
+logDref <- -0.67
+
+t_value <- 1.97
+
+sigma <- 0.62
+
+logDrefupper <- logDref + t_value*sigma
+
+logDreflower <- logDref - t_value*sigma
+
+# Convert from log scale to the original scale
+
+Drefupper <- 10^logDrefupper
+
+Dreflower <- 10^logDreflower
+
+# Print the result
+
+print(Drefupper)
+
+print(Dreflower)
+
+```
+
+We also know from [@van_asselt_systematic_2006] that $z = 10.67$. So, let's put the secondary model in the primary model described above (@eq-primary) :
+
+```{r}
+
+## Secondary model
+
+temperature <- 72
+
+Dref_tp <- Constant$new("Dref_tp", Drefupper)
+
+sec_model_tp <- Dz_model$new("D_tp")$
+
+map_input("Dref", Dref_tp)$
+
+map_input("temperature", Constant$new("temperature", 72))$
+
+map_input("z", Constant$new("z_tp", 10.67))$
+
+map_input("Tref", Constant$new("Tref", 70))
+
+```
+
+And now let's plug our secondary model to the primary one setting the treatment to 20 seconds:
+
+```{r}
+
+inactivation_tp <- LogLinInactivation$new("Treatment_tp")$
+
+map_input("logN0", Constant$new("logN0", 2.5))$ #We map logN0 to the initial count defined before
+
+map_input("D", sec_model_tp)$
+
+map_input("t",  Constant$new("t_tp", 0.333))
+
+```
+
+## Inactivation using HPP
+
+We want to do the same for HPP processing. For that we will use our log-linear model for fruit juices and *E. coli*, as defined from our meta-analysis:
+
+\$\$
+
+LogD = 1.434 -0.000329 cdot P
+
+\$\$ {#eq-secondary-pressure}
+
+This model is the same with the one showed above in @eq-secondary but with using pressure instead of temperature. The *z~p~* can be estimated as the negative inverse of the slope i.e., 304 MPa. For the Pref we will use 400 Mpa. The treatment pressure *P* is described by a normal distribution with mean 600 MPa and standard deviation 10 MPa (variability i.e., level = 0). Dref (at the Pref) was estimated as 1.3 minutes from the @eq-secondary-pressure but we assume that is described by a uniform distribution with a minimum of 1 minute and maximum of 4 minutes (variability i.e., level = 0). The treatment time in this case is assumed to be 5 minutes.
+
+Let's implement those changes:
+
+```{r}
+
+## Secondary model
+
+sec_model_hpp <- Dz_model$new("D_hpp")$
+
+map_input("Dref", Constant$new("Dref_hpp", 1.3))$
+
+map_input("temperature", Constant$new("pressure", 600))$
+
+map_input("z", Constant$new("z_hpp", 304))$
+
+map_input("Tref", Constant$new("Pref", 400))
+
+```
+
+```{r}
+
+inactivation_hpp <- LogLinInactivation$new("Treatment_hpp")$
+
+map_input("logN0", Constant$new("logN0", 2.5))$ #We map logN0 to the initial count defined before
+
+map_input("D", sec_model_hpp)$
+
+map_input("t", Constant$new("t_hpp", 5))
+
+```
+
+## Inactivation using PEF processing
+
+For PEF processing we will also define a log-linear primary inactivation model, but using the energy input ($E_i$ in kJ/L) instead:
+
+\$\$
+
+log\_{10}N = log\_{10}N_0 - frac{E_i}{D\_{E_i}}
+
+\$\$ {#eq-primary-energy}
+
+Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and *E. coli*. The *D* was estimated as 82.5 kJ/L and thus we used a uniform distribution for that with a minimum of 70 kJ/L and a maximum of 90 kJ/L. According to @aganovic_environmental_2022, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 $kg/L$). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.
+
+```{r}
+
+inactivation_pef <- LogLinInactivation$new("Treatment_pef")$
+
+map_input("logN0", Constant$new("logN0", 2.5))$ #We map logN0 to the initial count defined before
+
+map_input("D", Constant$new("D_pef", 82.5))$
+
+map_input("t", Constant$new("energy_pef", 120))
+
+```
+
+## Summary of all inactivation models
+
+::: panel-tabset
+#### Thermal processing inactivation model
+
+```{r}
+
+#| eval: false
+
+#| echo: false
+
+plot_model(inactivation_tp)
+
+```
+
+![](inactivation_tp.png)
+
+#### HPP inactivation model
+
+```{r}
+
+#| eval: false
+
+#| echo: false
+
+plot_model(inactivation_hpp)
+
+```
+
+![](inactivation_hpp.png)
+
+#### PEF inactivation model
+
+```{r}
+
+#| eval: false
+
+#| echo: false
+
+plot_model(inactivation_pef)
+
+```
+
+![](inactivation_pef.png)
+:::
+
+# Let's visualize what we have done so far with the inactivation models through a density plot after performing 1000 simulations:
+
+::: panel-tabset
+#### Thermal processing model
+
+```{r}
+
+inactivation_tp$simulate(1000)
+
+inactivation_tp$density_plot()
+
+```
+
+#### HPP inactivation model
+
+```{r}
+
+inactivation_hpp$simulate(1000)
+
+inactivation_hpp$density_plot()
+
+```
+
+#### PEF inactivaiton model
+
+```{r}
+
+inactivation_pef$simulate(1000)
+
+inactivation_pef$density_plot()
+
+```
+:::
+
+## Growth during storage
+
+In this section we will describe the microbial growth during storage using the exponential growth model with stationary phase (bilinear model):
+
+\$\$
+
+log N =
+
+begin{cases}
+
+log N_0 + mu cdot t & text{if } log N_0 + mu cdot t \< log N\_{text{max}}
+
+log N\_{text{max}} & text{otherwise}
+
+end{cases}
+
+\$\$ {#eq-expon_growth}
+
+with the growth rate given by the Ratkowsky model:
+
+\$\$
+
+sqrt{mu} = b cdot (T - T\_{text{min}}) quad (sqrt{frac{log}{h}})
+
+\$\$
+
+As above, we first need to define the secondary model. The Ratkowsky model has three inputs: treatment temperature, *T*~min~, and *b*. For the temperature, we assign a normal distribution that represents uncertainty (level = 1) with expected value (mean) of 6.35 ºC (we define the metric units) and a standard deviation of 2.83 ºC (we define the metric units) .
+
+Then, we define the Ratkowsky model, mapping the temperature to the element we just defined. In this case, we assume no variability or uncertainty in the model parameters, and the *b* is assumed to be 0.014 and *T~min~* to be 1.6.
+
+```{r}
+
+mu_distrib <- Ratkowsky_model$new("mu_distrib")$ #the Ratkowsky seondary model
+
+map_input("b",
+
+Constant$new("b_distrib", 0.0144) #with constant b
+
+)$
+
+map_input("Tmin",
+
+Constant$new("Tmin_distrib", 1.6) # and constant Tmin
+
+)$
+
+map_input("temperature",
+
+Constant$new("temp_distrib", 6.35)
+
+)
+
+```
+
+```{r}
+
+#| eval: false
+
+#| echo: false
+
+plot_model(mu_distrib)
+
+```
+
+The scheme of the secondary growth model as we defined it:
+
+![](C:/Users/pampo002/R/mu_distribution.png)
+
+Now, we can go back to the primary growth model and integrate our secondary model there. As mentioned above, the model to be used is the **ExponentialGrowthNmax** (@eq-expon_growth). The only input left to assign is the storage time, for which we will assume an exponential distribution with rate parameter 1/29.
+
+Now, we have everything and we will implement the **ExponentialGrowthNmax** as our primary model. For the treatment time, we will use the storage time that we just defined. The growth rate $mu$ is already mapped to the output of the Ratkowsky model. Then, the initial concentration at storage needs to be mapped to the output of the inactivation model (to be our reference logN0 for this stage). Finally, we will define a constant *N~max~* of 8 log CFU/g.
+
+```{r}
+
+#| eval: true
+
+# Define a function to create an ExponentialGrowthNmax object with mapped inputs
+
+# This function takes two arguments: 'name' and 'logN0_input'
+
+create_growth_distrib <- function(name, logN0_input) {
+
+ExponentialGrowthNmax$new(name)$ # Create a new ExponentialGrowthNmax object with the given name
+
+map_input("t", Constant$new("time_distrib", 120))$ # Map the 't' input to the 'time_distrib' object
+
+map_input("mu", mu_distrib)$ # Map the 'mu' input to the 'mu_distrib' object
+
+map_input("logN0", logN0_input)$ # Map the 'logN0' input to the provided 'logN0_input' argument
+
+map_input("logNmax", Constant$new("logNmax", 8)) # Map the 'logNmax' input to a constant value of 8
+
+}
+
+# Use the function to create three different growth distribution objects
+
+# Create 'growth_distrib_tp' by calling the function with 'growth_distrib' name and 'inactivation_tp' for logN0
+
+growth_distrib_tp <- create_growth_distrib("growth_distrib", inactivation_tp)
+
+# Create 'growth_distrib_hpp' by calling the function with 'growth_distrib' name and 'inactivation_hpp' for logN0
+
+growth_distrib_hpp <- create_growth_distrib("growth_distrib", inactivation_hpp)
+
+# Create 'growth_distrib_pef' by calling the function with 'growth_distrib' name and 'inactivation_pef' for logN0
+
+growth_distrib_pef <- create_growth_distrib("growth_distrib", inactivation_pef)
+
+```
+
+```{r}
+
+#| eval: true
+
+#| echo: false
+
+# Create a list of the models to be plotted
+
+growth_distrib_obj <- list(growth_distrib_tp, growth_distrib_hpp, growth_distrib_pef)
+
+```
+
+```{r}
+
+#| eval: false
+
+#| echo: false
+
+# Iterate over each model in the list and plot it
+
+lapply(growth_distrib_obj, plot_model)
+
+```
+
+# Summary of Initial concentration + Inactivation + Growth during distribution
+
+::: panel-tabset
+#### Thermal processing inactivation model
+
+![](growth_distribution_tp.png)
+
+#### HPP inactivation model
+
+![](growth_distribution_hpp.png)
+
+#### PEF inactivation model
+
+![](growth_distribution_pef.png)
+:::
+
+## Consumer phase {#sec-consumer_phase}
+
+The next step is to convert the microbial concentration (in log CFU/g) to the microbial dose consumed. For this, we will use the **Concentration2Dose** element. This element considers the fact that the dose is a sampling process (i.e., the output is a discrete number of cells).
+
+We have two inputs for the dose response model i.e., the microbial exposure at exposure and the serving size. For the latter, we use a uniform distribution that represents variability (level = 0). For the microbial concentration, we map the output of the growth element from above.
+
+```{r}
+
+#| eval: true
+
+# Define a function to create a Concentration2Dose object with mapped inputs
+
+# This function takes two arguments: 'name' and 'logN_input'
+
+# @param name The name of the Concentration2Dose object
+
+# @param logN_input The input object to map to the 'logN' parameter
+
+# @return A Concentration2Dose object with the specified mappings
+
+create_consumer_dose <- function(name, logN_input) {
+
+Concentration2Dose$new(name)$ # Create a new Concentration2Dose object with the given name
+
+map_input("logN", logN_input)$ # Map the 'logN' input to the provided 'logN_input' argument
+
+map_input("size", Constant$new("size", 350)) # Map the 'size' input to the 'serving_size' object
+
+}
+
+# Use the function to create three different consumer dose objects
+
+# Create 'consumer_dose_tp' by calling the function with 'dose' name and 'growth_distrib_tp' for logN
+
+consumer_dose_tp <- create_consumer_dose("dose", growth_distrib_tp)
+
+# Create 'consumer_dose_hpp' by calling the function with 'dose' name and 'growth_distrib_hpp' for logN
+
+consumer_dose_hpp <- create_consumer_dose("dose", growth_distrib_hpp)
+
+# Create 'consumer_dose_pef' by calling the function with 'dose' name and 'growth_distrib_pef' for logN
+
+consumer_dose_pef <- create_consumer_dose("dose", growth_distrib_pef)
+
+```
+
+## Risk characterization
+
+For this stage, we need first to define a dose-response model. We will use the exponential dose-response model:
+
+$$ P_{text{ill}} = 1 - e^{(-r cdot dose)} $$
+
+According to an RIVM study $r = 9.3 cdot 10^{-3}$ for children and $5.1 cdot 10^{-3}$ for adults (RIVM reference). Taking the worst-case scenario (children) and assuming a constant pathogen-host survival probability the equation is:
+
+$$ P_{text{ill}} = 1 - e^{(-9.3 cdot 10^{-3} cdot dose)} $$
+
+where the dose is the output of the @sec-consumer_phase section
+
+```{r}
+
+#| eval: true
+
+# Define a function to create a DoseResponse_Exponential object with mapped inputs
+
+# This function takes two arguments: 'name' and 'dose_input'
+
+# @param name The name of the DoseResponse_Exponential object
+
+# @param dose_input The input object to map to the 'dose' parameter
+
+# @return A DoseResponse_Exponential object with the specified mappings
+
+create_pill <- function(name, dose_input) {
+
+DoseResponse_Exponential$new(name)$ # Create a new DoseResponse_Exponential object with the given name
+
+map_input("r", Constant$new("r_dr", 9.3e-3))$ # Map the 'r' input to a constant value of 9.3e-3
+
+map_input("dose", dose_input) # Map the 'dose' input to the provided 'dose_input' argument
+
+}
+
+# Create the three different Pill objects
+
+Pill_tp <- create_pill("Pill", consumer_dose_tp)
+
+Pill_hpp <- create_pill("Pill", consumer_dose_hpp)
+
+Pill_pef <- create_pill("Pill", consumer_dose_pef)
+
+# List of Pill objects
+
+pill_objects <- list(Pill_tp, Pill_hpp, Pill_pef)
+
+# Calculate and print the median values for each dose response object
+
+median_values <- lapply(pill_objects, function(pill) {
+
+median_value <- pill$point_estimate()
+
+print(median_value)
+
+return(median_value)
+
+})
+
+```
+
+Then, we can estimate the number of cases. For that, **biorisk** includes the **Pill2Cases_N** element to convert from probability of illness to number of cases, assuming that the number of cases can be described by a binomial distribution as shown below:
+
+$$ text{cases} = text{Binomial}(n = text{servings}, p = P_{text{ill}}) $$ For our information the mean of the binomial distribution could also estimated using $10^{12}$ servings multiplied with the median value of the $P_{text{ill}}$ that was previously defined:
+
+$$mu_{text{mean}} = 10^{12} cdot P_{text{ill(median)}}$$
+
+```{r}
+
+#| eval: true
+
+# Calculate the mu_mean values by multiplying each median value by 1e12
+
+mu_means <- lapply(median_values, function(median_value) {
+
+1e12 * median_value
+
+})
+
+# Print the mu_mean values
+
+print(mu_means)
+
+```
+
+This element considers for each Monte Carlo iteration that the **nservings** have the same probability of illness. On the other hand, the element **Pill2Cases_1** considers a single serving per Pill. In this case, we will make the calculations per $10^{12}$ servings.
+
+```{r}
+
+#| eval: true
+
+# Define a function to create a Pill2Cases_N object with mapped inputs
+
+# This function takes two arguments: 'name' and 'pill_input'
+
+# @param name The name of the Pill2Cases_N object
+
+# @param pill_input The input object to map to the 'Pill' parameter
+
+# @return A Pill2Cases_N object with the specified mappings
+
+create_cases <- function(name, pill_input) {
+
+Pill2Cases_N$new(name)$ # Create a new Pill2Cases_N object with the given name
+
+map_input("Pill", pill_input)$ # Map the 'Pill' input to the provided 'pill_input' argument
+
+map_input("servings", Constant$new("n_servings", 1e12)) # Map the 'servings' input to a constant value of 1e12
+
+}
+
+# Create the cases objects for each Pill
+
+cases_tp <- create_cases("cases", Pill_tp)
+
+cases_hpp <- create_cases("cases", Pill_hpp)
+
+cases_pef <- create_cases("cases", Pill_pef)
+
+# List of cases objects
+
+cases_obj <- list(cases_tp, cases_hpp, cases_pef)
+
+# Calculate and print the number of cases for each Pill object
+
+cases_values <- lapply(cases_obj, function(cases) {
+
+cases_value <- cases$point_estimate()
+
+print(cases_value)
+
+return(cases_value)
+
+})
+
+```

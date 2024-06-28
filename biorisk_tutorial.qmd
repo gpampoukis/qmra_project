@@ -1,0 +1,125 @@
+---
+title: "biorisk_tutorial"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+## Initial concentration
+
+First we define our initial concentration. Let's say that it follows a normal distribution:
+
+```{r}
+library(tidyverse)
+library(biorisk)
+logN0 <- Normal$new("logN0")
+logN0$inputs
+
+```
+
+We define the mean and the standard deviation of the normal distribution. Then we map (connect) these values with out variable logN0
+```{r}
+mu_logN0 <- Constant$new("mulogN0", 0)
+sigma_logN0 <- Constant$new("sigma_logN0", .5)
+logN0 <- Normal$new("logN0")$
+  map_input("mu", mu_logN0)$
+  map_input("sigma", sigma_logN0)
+plot_model(logN0)
+
+```
+
+## Inactivation
+
+First we define and then check the inputs of the Bigelow model:
+```{r}
+inact <- LogLinInactivation$new("Inactivation")
+inact$inputs
+```
+Now we know the inputs so we put the corresponding values (define and then map. The logN0 is already there, so we just map it. We assign 30 to the treatment time, adn for D we define a new distribution (log normal) where we define the mean and the standard deviation:
+
+```{r}
+inact$map_input("logN0", logN0)
+
+inact$map_input("t",
+                Constant$new("treatment_time", 30))
+
+D <- LogNormal$new("D")$
+  map_input("mu_log10", Constant$new("mu_logD", 1))$
+  map_input("sigma_log10", Constant$new("sigma_logD", 0.2))
+
+inact$map_input("D", D)
+
+plot_model(inact)
+```
+
+Now we perform our simulations and visualize the result:
+
+```{r}
+set.seed(42)
+inact$simulate(1000)
+inact$simulations %>% head()
+```
+
+```{r}
+inact$histogram()
+#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+These were the simulations for the whole inactivation but how about the D-value?
+```{r}
+D$simulations %>% head()
+```
+
+```{r}
+D$histogram()
+#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+And a density plot for example for our logN0
+
+```{R}
+logN0$density_plot()
+```
+
+We can plot our outputs:
+
+```{r}
+plot_outputs(inact)
+```
+
+Or the outputs of interest with the same units (previously they were not in the same units):
+
+```{r}
+plot_outputs(inact, chosen = c("logN0", "Inactivation"))
+
+```
+Or with a violin plot:
+
+```{r}
+plot_outputs(inact, chosen = c("logN0", "Inactivation"), type = "violin")
+```
+Or again with density plot:
+
+```{r}
+plot_outputs(inact, chosen = c("logN0", "Inactivation"), type = "density")
+```
+

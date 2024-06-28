@@ -1,0 +1,3 @@
+# Ignore .RData file
+.RData
+.Rproj.user
