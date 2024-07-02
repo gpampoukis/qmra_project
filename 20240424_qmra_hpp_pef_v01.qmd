@@ -460,7 +460,11 @@ $$ P_{\text{ill}} = 1 - e^{(-r \cdot dose)} $$
 
 According to an RIVM study $r = 9.3 \cdot 10^{-3}$ for children and $5.1 \cdot 10^{-3}$ for adults (RIVM reference). Taking the worst-case scenario (children) and assuming a constant pathogen-host survival probability the equation is:
 
-$$ P_{\text{ill}} = 1 - e^{(-9.3 \cdot 10^{-3} \cdot dose)} $$
+$$ P_{\text{ill}} = 1 - e^{(-9.3 \cdot 10^{-3} \cdot dose)} $$for children and:
+
+$$ P_{\text{ill}} = 1 - e^{(-5.1 \cdot 10^{-3} \cdot dose)} $$
+
+for adults, respectively
 
 where the dose is the output of the @sec-consumer_phase section
 
@@ -478,6 +482,19 @@ create_pill <- function(name, dose_input) {
     map_input("r", Constant$new("r_dr", 9.3e-3))$  # Map the 'r' input to a constant value of 9.3e-3
     map_input("dose", dose_input)  # Map the 'dose' input to the provided 'dose_input' argument
 }
+
+create_pill <- function(name, dose_input) {
+  # Define the weighted average r value
+  r_children <- 9.3e-3
+  r_adults <- 5.1e-3
+  population_children <- 0.2
+  population_adults <- 0.8
+  r_value <- (r_children * population_children) + (r_adults * population_adults)
+  DoseResponse_Exponential$new(name)$  # Create a new DoseResponse_Exponential object with the given name
+    map_input("r", Constant$new("r_dr", r_value))$  # Map the 'r' input to the weighted average r value
+    map_input("dose", dose_input)  # Map the 'dose' input to the provided 'dose_input' argument
+}
+
 
 # Create the three different Pill objects
 Pill_tp <- create_pill("Pill", consumer_dose_tp)
