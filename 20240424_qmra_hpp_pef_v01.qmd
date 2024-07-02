@@ -47,6 +47,14 @@ Although Listeria monocytogenes has not been linked specifically to an illness o
 
 Low-acid juices, such as carrot juice, that are distributed under refrigeration, and are not subject to the Low Acid Canned Foods regulation (21 CFR Part 113) may pose hazards associated with spore forming pathogens, specifically, toxins of non-proteolytic and proteolytic strains of Clostridium botulinum. Control measures for such juices are likely to involve multiple measures, e.g., a combination of a process step to destroy the non-proteolytic spores and measures to ensure that "Keep Refrigerated" labeling is used for the juice if the juice does not receive a treatment sufficient to destroy the proteolytic spores (Destruction of spores of the proteolytic strains requires a more severe heat treatment but germination and growth of these spores may be prevented by keeping the product under refrigeration during its lifecycle. Destruction of spores of the non-proteolytic strains requires a less severe heat treatment, but these spores can germinate and produce toxin even under refrigerated storage conditions) [@nutrition_guidance_2024].
 
+## Previous QMRAs in the domain
+
+One for apples is @frankish_farm_2024 and another one for apple cider is @duffy_modeling_2001.
+
+## Regarding growth
+
+The literature is mixed but in most cases there is no growth but inactivation isntead @duffy_modeling_2001 have shown that the behaviour can be simulated with a logistic or a uniform distribution based on the storage temperatures (but they say that overall there was a decline although a small fraction of the time a slight increase was seen)
+
 ## Initial concentration
 
 According to @european_food_safety_authority_urgent_2011, out of 5910 of evegetable and fruit samples during the years 2004-2009, only 11 of them were found positive for STEC (0.19%) and non of them corresponded to fruits (n=2774) or juice (n=317) samples. We will assume that the microorganism of interest is *Escherichia coli.* We will define our initial concentration as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. We assume that this concentration can be described by a uniform distribution with minimum and maximum with equal probabilities to be 2 or 3 log~10~ CFU/ml, respectively. It has some variability which is defined in level 0.
@@ -458,6 +466,10 @@ For this stage, we need first to define a dose-response model. We will use the e
 
 $$ P_{\text{ill}} = 1 - e^{(-r \cdot dose)} $$
 
+Another approach would be to use the modified Beta-Binomial model of @cassin_quantitative_1998 (with $alpha = 0.267$ and $beta = 229.2928$), as they did in @frankish_farm_2024:
+$$ P_{\text{ill}} = 1 - \left(1 + \frac{D}{\beta}\right)^{\alpha} $$
+
+
 According to an RIVM study $r = 9.3 \cdot 10^{-3}$ for children and $5.1 \cdot 10^{-3}$ for adults (RIVM reference). Taking the worst-case scenario (children) and assuming a constant pathogen-host survival probability the equation is:
 
 $$ P_{\text{ill}} = 1 - e^{(-9.3 \cdot 10^{-3} \cdot dose)} $$for children and:
@@ -477,39 +489,34 @@ where the dose is the output of the @sec-consumer_phase section
 # @param dose_input The input object to map to the 'dose' parameter
 # @return A DoseResponse_Exponential object with the specified mappings
 
-create_pill <- function(name, dose_input) {
+create_pill <- function(name, dose_input, r_value) {
   DoseResponse_Exponential$new(name)$  # Create a new DoseResponse_Exponential object with the given name
-    map_input("r", Constant$new("r_dr", 9.3e-3))$  # Map the 'r' input to a constant value of 9.3e-3
+    map_input("r", Constant$new("r_dr", r_value))$  # Map the 'r' input to the given r value
     map_input("dose", dose_input)  # Map the 'dose' input to the provided 'dose_input' argument
 }
 
-create_pill <- function(name, dose_input) {
-  # Define the weighted average r value
-  r_children <- 9.3e-3
-  r_adults <- 5.1e-3
-  population_children <- 0.2
-  population_adults <- 0.8
-  r_value <- (r_children * population_children) + (r_adults * population_adults)
-  DoseResponse_Exponential$new(name)$  # Create a new DoseResponse_Exponential object with the given name
-    map_input("r", Constant$new("r_dr", r_value))$  # Map the 'r' input to the weighted average r value
-    map_input("dose", dose_input)  # Map the 'dose' input to the provided 'dose_input' argument
-}
+# Create the Pill objects for children and adults separately
+Pill_tp_children <- create_pill("Pill_tp_children", consumer_dose_tp, 9.3e-3)
+Pill_tp_adults <- create_pill("Pill_tp_adults", consumer_dose_tp, 5.1e-3)
+Pill_hpp_children <- create_pill("Pill_hpp_children", consumer_dose_hpp, 9.3e-3)
+Pill_hpp_adults <- create_pill("Pill_hpp_adults", consumer_dose_hpp, 5.1e-3)
+Pill_pef_children <- create_pill("Pill_pef_children", consumer_dose_pef, 9.3e-3)
+Pill_pef_adults <- create_pill("Pill_pef_adults", consumer_dose_pef, 5.1e-3)
 
+# Calculate the median values for each dose response object for both children and adults
+median_tp_children <- Pill_tp_children$point_estimate()
+median_tp_adults <- Pill_tp_adults$point_estimate()
+median_hpp_children <- Pill_hpp_children$point_estimate()
+median_hpp_adults <- Pill_hpp_adults$point_estimate()
+median_pef_children <- Pill_pef_children$point_estimate()
+median_pef_adults <- Pill_pef_adults$point_estimate()
 
-# Create the three different Pill objects
-Pill_tp <- create_pill("Pill", consumer_dose_tp)
-Pill_hpp <- create_pill("Pill", consumer_dose_hpp)
-Pill_pef <- create_pill("Pill", consumer_dose_pef)
-
-# List of Pill objects
-pill_objects <- list(Pill_tp, Pill_hpp, Pill_pef)
-
-# Calculate and print the median values for each dose response object
-median_values <- lapply(pill_objects, function(pill) {
-  median_value <- pill$point_estimate()
-  print(median_value)
-  return(median_value)
-})
+print(median_tp_children)
+print(median_tp_adults)
+print(median_hpp_children)
+print(median_hpp_adults)
+print(median_pef_children)
+print(median_pef_adults)
 
 
 ```
@@ -523,20 +530,22 @@ $$\mu_{\text{mean}} = 10^{12} \cdot P_{\text{ill(median)}}$$
 ```{r}
 #| eval: true
 
-# Calculate the mu_mean values by multiplying each median value by 1e12
-mu_means <- lapply(median_values, function(median_value) {
-  4.6e10 * median_value
-})
+# Calculate the mu_mean values by multiplying each combined median value by 4.6e10
+mu_mean_tp <- 4.6e10 * combined_median_tp
+mu_mean_hpp <- 4.6e10 * combined_median_hpp
+mu_mean_pef <- 4.6e10 * combined_median_pef
 
 # Print the mu_mean values
-print(mu_means)
+print(mu_mean_tp)
+print(mu_mean_hpp)
+print(mu_mean_pef)
 
 ```
 
 This element considers for each Monte Carlo iteration that the **nservings** have the same probability of illness. On the other hand, the element **Pill2Cases_1** considers a single serving per Pill. In this case, we will make the calculations per $10^{12}$ servings.
 
 ```{r}
-#| eval: true 
+#| eval: true
 
 # Define a function to create a Pill2Cases_N object with mapped inputs
 # This function takes two arguments: 'name' and 'pill_input'
@@ -546,24 +555,24 @@ This element considers for each Monte Carlo iteration that the **nservings** hav
 
 create_cases <- function(name, pill_input) {
   Pill2Cases_N$new(name)$  # Create a new Pill2Cases_N object with the given name
-    map_input("Pill", pill_input)$  # Map the 'Pill' input to the provided 'pill_input' argument
+    map_input("Pill", Constant$new("Pill", pill_input))$  # Map the 'Pill' input to the provided 'pill_input' argument
     map_input("servings", Constant$new("n_servings", 4.6e10))  # Map the 'servings' input to a constant value of 4.6e10
 }
 
-# Create the cases objects for each Pill
-cases_tp <- create_cases("cases", Pill_tp)
-cases_hpp <- create_cases("cases", Pill_hpp)
-cases_pef <- create_cases("cases", Pill_pef)
-
-# List of cases objects
-cases_obj <- list(cases_tp, cases_hpp, cases_pef)
+# Create the cases objects for each combined median value
+cases_tp <- create_cases("cases_tp", combined_median_tp)
+cases_hpp <- create_cases("cases_hpp", combined_median_hpp)
+cases_pef <- create_cases("cases_pef", combined_median_pef)
 
 # Calculate and print the number of cases for each Pill object
-cases_values <- lapply(cases_obj, function(cases) {
-  cases_value <- cases$point_estimate()
-  print(cases_value)
-  return(cases_value)
-})
+cases_tp_value <- cases_tp$point_estimate()
+cases_hpp_value <- cases_hpp$point_estimate()
+cases_pef_value <- cases_pef$point_estimate()
+
+print(cases_tp_value)
+print(cases_hpp_value)
+print(cases_pef_value)
+
 
 ```
 
@@ -576,6 +585,8 @@ cases_values <- lapply(cases_obj, function(cases) {
 #| eval: false
 #| echo: false 
 plot_model(cases_tp)
+
+
 ```
 
 ![](cases_tp.png)
@@ -596,6 +607,7 @@ plot_model(cases_hpp)
 #| eval: false
 #| echo: false 
 plot_model(cases_pef)
+
 ```
 
 ![](cases_pef.png)
@@ -614,6 +626,8 @@ cases_hpp$check_input_types(recursive = TRUE)
 cases_pef$check_input_types(recursive = TRUE)
 
 # Warning: In element Pill: the element expects discrete for input dose. Got continuous instead from dose. We cannot have 321.1 CFU but we made this simplification, this would work if we would take the discrete models of the other case study
+
+
 ```
 
 ## Simulation as a 1D Monte Carlo
