@@ -69,6 +69,8 @@ library(biorisk)
 ```
 
 ```{r}
+#| eval: false
+#| echo: false
 logN0 <- Uniform$new("logN0", # A uniform distribution
                  level = 0)$
   map_input("min",
@@ -77,6 +79,16 @@ logN0 <- Uniform$new("logN0", # A uniform distribution
   map_input ("max",
              Constant$new("logN0_max", 1) # and a constant max. value
 )
+
+```
+
+```{r}
+#| eval: true
+#| echo: true
+
+# The equivalent scenario without variability
+
+logN0 <- Constant$new("logN0", -6)
 
 ```
 
@@ -105,6 +117,8 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 $$
 
 ```{r}
+#| eval: false
+#| echo: false
 
 logDref <- -0.67
 t_value <- 1.97
@@ -119,9 +133,22 @@ print(Drefupper)
 print(Dreflower)
 ```
 
+```{r}
+#| eval: true
+#| echo: true
+
+# The equivalent without variability and using the Dref
+logDref <- -1.77 #this is the value from Esther for fruit juices and ciders without other additives (26 datapoints and extrapolation the equation is: y = -0.1785x + 10.723 R² = 0.9057)
+Dref <- 10^logDref
+print(Dref)
+
+```
+
 We also know from [@van_asselt_systematic_2006] that $z = 10.67$. So, let's put the secondary model in the primary model described above (@eq-primary) :
 
 ```{r}
+#| eval: false
+#| echo: false
 ## Secondary model
 
 #temperature <- Normal$new("temperature", level = 0)$  # Normal pressure level with some variability assigned
@@ -134,7 +161,24 @@ Dref_tp <- Constant$new("Dref_tp", Drefupper)
 sec_model_tp <- Dz_model$new("D_tp")$
   map_input("Dref", Dref_tp)$
   map_input("temperature", Constant$new("temperature", 72))$
-  map_input("z", Constant$new("z_tp", 10.67))$
+  map_input("z", Constant$new("z_tp", 5.602))$ #this is the value from Esther for fruit juices and ciders without other additives
+  map_input("Tref", Constant$new("Tref", 70))
+```
+
+```{r}
+#| eval: true
+#| echo: true
+
+# The equivalent without variability and uncertainty
+
+# Secondary model
+
+Dref_tp <- Constant$new("Dref_tp", Dref)
+
+sec_model_tp <- Dz_model$new("D_tp")$
+  map_input("Dref", Dref_tp)$
+  map_input("temperature", Constant$new("temperature", 72))$
+  map_input("z", Constant$new("z_tp", 5.602))$ #this is the value from Esther for fruit juices and ciders without other additives
   map_input("Tref", Constant$new("Tref", 70))
 ```
 
@@ -163,7 +207,10 @@ This model is the same with the one showed above in @eq-secondary but with using
 Let's implement those changes:
 
 ```{r}
-## Secondary model
+#| eval: false
+#| echo: false
+
+# Secondary model
 
 pressure <- Normal$new("pressure", level = 0)$  # Normal pressure level with some variability assigned
   map_input("mu", Constant$new("pressure_mu", 550))$
@@ -176,6 +223,24 @@ pressure <- Normal$new("pressure", level = 0)$  # Normal pressure level with som
 sec_model_hpp <- Dz_model$new("D_hpp")$
   map_input("Dref", Constant$new("Dref_hpp", 1.3))$
   map_input("temperature", pressure)$
+  map_input("z", Constant$new("z_hpp", 304))$
+  map_input("Tref", Constant$new("Pref", 400))
+```
+
+```{r}
+#| eval: true
+#| echo: true
+# The equivalent without variability
+
+# Secondary model
+
+# Dref_hpp <- Uniform$new("Dref_hpp", level = 0)$  # Variability in Dref
+  # map_input("min", Constant$new("Dref_hpp_min", 1))$
+  # map_input("max", Constant$new("Dref_hpp_max", 4))
+
+sec_model_hpp <- Dz_model$new("D_hpp")$
+  map_input("Dref", Constant$new("Dref_hpp", 1.3))$
+  map_input("temperature", Constant$new("pressure_mu", 550))$
   map_input("z", Constant$new("z_hpp", 304))$
   map_input("Tref", Constant$new("Pref", 400))
 ```
@@ -201,7 +266,8 @@ $$ {#eq-primary-energy}
 Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and *E. coli*. The *D* was estimated as 82.5 kJ/L and thus we used a uniform distribution for that with a minimum of 70 kJ/L and a maximum of 90 kJ/L. According to @aganovic_environmental_2022, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 $kg/L$). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.
 
 ```{r}
-
+#| eval: false
+#| echo: false
 # D_pef <- Uniform$new("D_pef", level = 0)$  # Variability in D_pef
   # map_input("min", Constant$new("D_pef_min", 70))$
   # map_input("max", Constant$new("D_pef_max", 90))
@@ -215,6 +281,18 @@ inactivation_pef <- LogLinInactivation$new("Treatment_pef")$
   map_input("D", Constant$new("D_pef", 82.5))$
   map_input("t", energy_pef)
 
+```
+
+```{r}
+#| eval: true
+#| echo: true
+
+# The equivalent without variability
+
+inactivation_pef <- LogLinInactivation$new("Treatment_pef")$
+  map_input("logN0", logN0)$ #We map logN0 to the initial count defined before
+  map_input("D", Constant$new("D_pef", 82.5))$
+  map_input("t", Constant$new("energy_mu", 120))
 ```
 
 ## Summary of all inactivation models
@@ -257,7 +335,8 @@ plot_model(inactivation_pef)
 #### Thermal processing model
 
 ```{r}
-
+#| eval: false
+#| echo: false
 inactivation_tp$simulate(1000)
 inactivation_tp$density_plot()
 
@@ -266,7 +345,8 @@ inactivation_tp$density_plot()
 #### HPP inactivation model
 
 ```{r}
-
+#| eval: false
+#| echo: false
 inactivation_hpp$simulate(1000)
 inactivation_hpp$density_plot()
 
@@ -275,7 +355,8 @@ inactivation_hpp$density_plot()
 #### PEF inactivaiton model
 
 ```{r}
-
+#| eval: false
+#| echo: false
 inactivation_pef$simulate(1000)
 inactivation_pef$density_plot()
 
@@ -425,7 +506,8 @@ The next step is to convert the microbial concentration (in log CFU/g) to the mi
 We have two inputs for the dose response model i.e., the microbial exposure at exposure and the serving size. For the latter, we use a uniform distribution that represents variability (level = 0). For the microbial concentration, we map the output of the growth element from above.
 
 ```{r}
-#| eval: true
+#| eval: false
+#| echo: false
 
 # Define the serving_size object
 serving_size <- Uniform$new("size", level = 0)$  # Create a new Uniform object named 'size'
@@ -435,6 +517,15 @@ serving_size <- Uniform$new("size", level = 0)$  # Create a new Uniform object n
 
 ```{r}
 #| eval: true
+#| echo: true
+
+#The equivalent without variability
+
+# Define the serving_size object
+serving_size <- Constant$new("serving_size", 200)  # Map the input to a constant value of 200
+```
+
+```{r}
 # Define a function to create a Concentration2Dose object with mapped inputs
 # This function takes two arguments: 'name' and 'logN_input'
 # @param name The name of the Concentration2Dose object
@@ -450,13 +541,20 @@ create_consumer_dose <- function(name, logN_input) {
 # Use the function to create three different consumer dose objects
 
 # Create 'consumer_dose_tp' by calling the function with 'dose' name and 'growth_distrib_tp' for logN
-consumer_dose_tp <- create_consumer_dose("dose", inactivation_tp)
+consumer_dose_tp <- create_consumer_dose("consumer_dose_tp", inactivation_tp)
 
 # Create 'consumer_dose_hpp' by calling the function with 'dose' name and 'growth_distrib_hpp' for logN
-consumer_dose_hpp <- create_consumer_dose("dose", inactivation_hpp)
+consumer_dose_hpp <- create_consumer_dose("consumer_dose_hpp", inactivation_hpp)
 
 # Create 'consumer_dose_pef' by calling the function with 'dose' name and 'growth_distrib_pef' for logN
-consumer_dose_pef <- create_consumer_dose("dose", inactivation_pef)
+consumer_dose_pef <- create_consumer_dose("consumer_dose_pef", inactivation_pef)
+
+inactivation_tp$point_estimate()
+inactivation_hpp$point_estimate()
+inactivation_pef$point_estimate()
+consumer_dose_tp$point_estimate()
+consumer_dose_hpp$point_estimate()
+consumer_dose_pef$point_estimate()
 
 ```
 
@@ -479,8 +577,6 @@ for adults, respectively
 where the dose is the output of the @sec-consumer_phase section
 
 ```{r}
-#| eval: true
-
 # Define a function to create a DoseResponse_Exponential object with mapped inputs
 # This function takes two arguments: 'name' and 'dose_input'
 # @param name The name of the DoseResponse_Exponential object
@@ -504,21 +600,21 @@ Pill_hpp_children <- create_pill("Pill_hpp_children", consumer_dose_hpp, 9.3e-3)
 
 # Calculate the median values for each dose response object for both children and adults
 
-median_tp_adults <- Pill_tp_adults$point_estimate()
-median_hpp_adults <- Pill_hpp_adults$point_estimate()
-median_pef_adults <- Pill_pef_adults$point_estimate()
-median_tp_children <- Pill_tp_children$point_estimate()
-median_hpp_children <- Pill_hpp_children$point_estimate()
-median_pef_children <- Pill_pef_children$point_estimate()
+pill_median_tp_adults <- Pill_tp_adults$point_estimate()
+pill_median_hpp_adults <- Pill_hpp_adults$point_estimate()
+pill_median_pef_adults <- Pill_pef_adults$point_estimate()
+pill_median_tp_children <- Pill_tp_children$point_estimate()
+pill_median_hpp_children <- Pill_hpp_children$point_estimate()
+pill_median_pef_children <- Pill_pef_children$point_estimate()
 
 
 
-print(median_tp_adults)
-print(median_hpp_adults)
-print(median_pef_adults)
-print(median_tp_children)
-print(median_hpp_children)
-print(median_pef_children)
+print(pill_median_tp_adults)
+print(pill_median_hpp_adults)
+print(pill_median_pef_adults)
+print(pill_median_tp_children)
+print(pill_median_hpp_children)
+print(pill_median_pef_children)
 
 
 
@@ -528,7 +624,7 @@ Then, we can estimate the number of cases. For that, **biorisk** includes the **
 
 $$ \text{cases} = \text{Binomial}(n = \text{servings}, p = P_{\text{ill}}) $$According to the European Fruit Juice Association 2019 Liquid Fruit Market Report (https://aijn.h5mag.com/aijn2019report/the_fruit_juice_industry_overall_fruit_juice_consumption), 9.1 billion litres of fruit juice were consumed in 2017. If we convert this number to serving of 200 ml, we would have approximately $4.6*10^{10}$ servings. For our information the mean of the binomial distribution could also estimated using $4.6*10^{10}$ servings multiplied with the median value of the $P_{\text{ill}}$ that was previously defined:
 
-$$\mu_{\text{mean}} = 10^{12} \cdot P_{\text{ill(median)}}$$
+$$\mu_{\text{mean}} = 4.6 \cdot 10^{12} \cdot P_{\text{ill(median)}}$$
 
 ```{r}
 #| eval: true
@@ -536,15 +632,15 @@ $$\mu_{\text{mean}} = 10^{12} \cdot P_{\text{ill(median)}}$$
 servings_adults <- 0.8*4.6e10
 servings_children <- 0.2*4.6e10
 
-# Calculate the mu_mean values by multiplying each combined median value by 4.6e10
-mu_mean_tp <- (median_tp_children * servings_children) + (median_tp_adults * servings_adults)
-mu_mean_hpp <- (median_hpp_children * servings_children) + (median_hpp_adults * servings_adults)
-mu_mean_pef <- (median_pef_children * servings_children) + (median_pef_adults * servings_adults)
+# Calculate the mean cases values by multiplying each combined median value by 4.6e10
+cases_mean_tp <- (pill_median_tp_children * servings_children) + (pill_median_tp_adults * servings_adults)
+cases_mean_hpp <- (pill_median_hpp_children * servings_children) + (pill_median_hpp_adults * servings_adults)
+cases_mean_pef <- (pill_median_pef_children * servings_children) + (pill_median_pef_adults * servings_adults)
 
-# Print the mu_mean values
-print(mu_mean_tp)
-print(mu_mean_hpp)
-print(mu_mean_pef)
+# Print the cases_mean values
+print(cases_mean_tp)
+print(cases_mean_hpp)
+print(cases_mean_pef)
 
 ```
 
@@ -689,7 +785,8 @@ cases_pef_children$check_input_types(recursive = TRUE)
 Then, we continue with our 1D Monte Carlo:
 
 ```{r}
-#| eval: true
+#| eval: false
+#| echo: false
 cases_tp_adults$simulate(100000, seed = 241)
 cases_hpp_adults$simulate(100000, seed = 241)
 cases_pef_adults$simulate(100000, seed = 241)
@@ -701,7 +798,8 @@ cases_pef_children$simulate(100000, seed = 241)
 We can now visualize the number of cases per $10^{12}$ servings, as a histogram. We will use the log transform due to the heavy tail, but this removes also the 0s i.e., the simulations that lead to 0 cases. Therefore we also need to know how many are the 0s in our simulations (it's in the warning created). We will also add a discrete line with the approximate as estimated before. (Note that this is quite biased with respect to the histogram. The reasons for this is the use of asymmetric distributions and the nonlinear models).
 
 ```{r}
-#| eval: true
+#| eval: false
+#| echo: false
 cases_tp_adults$histogram(add_discrete = TRUE) + scale_x_log10()
 cases_hpp_adults$histogram(add_discrete = TRUE) + scale_x_log10()
 cases_pef_adults$histogram(add_discrete = TRUE) + scale_x_log10()
@@ -715,6 +813,7 @@ Then, we can also visualize other elements such as the microbial concentration a
 
 ```{r}
 #| eval: false
+#| echo: false
 growth_distrib_tp$density_plot(TRUE)
 growth_distrib_hpp$density_plot(TRUE)
 growth_distrib_pef$density_plot(TRUE)
@@ -723,8 +822,8 @@ growth_distrib_pef$density_plot(TRUE)
 Now we will take a look at the quantiles
 
 ```{r}
-#| eval: true
-
+#| eval: false
+#| echo: false
 quantile_table(cases_tp_adults, chosen = c("cases", "Pill", "dose", "Treatment_tp"),
                probs = c(0.50, 0.90, 0.99))
 
@@ -751,7 +850,8 @@ It would also be nice to monitor the variation of the microbial concentration on
 #### Box plot
 
 ```{r}
-#| eval: true
+#| eval: false
+#| echo: false
 #| label: plot-E
 #| fig-height: 8
 #| fig-width: 12
@@ -784,8 +884,8 @@ plots <- mapply(function(inactivation_obj, method) {
 #### Violin plot
 
 ```{r}
-#| eval: true
-
+#| eval: false
+#| echo: false
 # List of inactivation objects
 inactivation_obj <- list(inactivation_tp, inactivation_hpp, inactivation_pef)
 
@@ -809,8 +909,8 @@ plots <- mapply(function(inactivation_obj, method) {
 #### Density plot
 
 ```{r}
-#| eval: true
-
+#| eval: false
+#| echo: false
 # List of inactivation objects
 inactivation_obj <- list(inactivation_tp, inactivation_hpp, inactivation_pef)
 
@@ -835,6 +935,8 @@ plots <- mapply(function(inactivation_obj, method) {
 Let's perform also a sensitiviy analysis for the overall model (**cases**):
 
 ```{r}
+#| eval: false
+#| echo: false
 tornado_plot(cases_tp_adults)
 tornado_plot(cases_hpp_adults)
 tornado_plot(cases_pef_adults)
@@ -848,8 +950,8 @@ tornado_plot(cases_pef_children)
 For the 2D-MC simulation we need two inputs, the number of simulations for level 0 (variability) and the number of simulations for level 1 (uncertainty). We will use 1000 iterations for variability and 100 for uncertainty. We will visualize the results for growth distribution with a density plot that compares the distribution from the variability (blue) with the distribution including all sources of variation (variability & uncertainty)(grey). Also, we will visualize the cumulative distribution where the line represents the level 0 (variability) and the ribbon the additional variation due to the uncertainty level.
 
 ```{r}
-#| eval: true
-
+#| eval: false
+#| echo: false
 cases_tp_adults$simulate_2D(1000, 100, seed = 792)
 cases_hpp_adults$simulate_2D(1000, 100, seed = 792)
 cases_pef_adults$simulate_2D(1000, 100, seed = 792)
@@ -875,7 +977,8 @@ inactivation_pef$cummulative_plot_2D()
 And the same for the cases for adults:
 
 ```{r}
-#| eval: true
+#| eval: false
+#| echo: false
 cases_tp_adults$density_plot()
 cases_tp_adults$density_plot_2D()
 cases_hpp_adults$density_plot()
@@ -895,7 +998,8 @@ cases_pef_adults$cummulative_plot_2D()
 And for children:
 
 ```{r}
-#| eval: true
+#| eval: false
+#| echo: false
 cases_tp_children$density_plot()
 cases_tp_children$density_plot_2D()
 cases_hpp_children$density_plot()
