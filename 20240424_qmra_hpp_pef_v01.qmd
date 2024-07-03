@@ -815,7 +815,7 @@ plots <- mapply(function(inactivation_obj, method) {
 inactivation_obj <- list(inactivation_tp, inactivation_hpp, inactivation_pef)
 
 # Names of the processing methods
-processing_methods <- c("Thermal processing", "High Pressure Processing", "Pulsed Electric Fields")
+processing_methods <- c("Thermal processing", "High Pressure Processing", "Pulsed Electric Field")
 
 # General function to plot outputs for a given inactivation object and processing method
 plot_case_outputs <- function(inactivation_obj, method) {
@@ -870,11 +870,44 @@ inactivation_hpp$cummulative_plot_2D()
 inactivation_pef$cummulative_plot()
 inactivation_pef$cummulative_plot_2D()
 
+```
+
+And the same for the cases for adults:
+
+```{r}
+#| eval: true
+cases_tp_adults$density_plot()
+cases_tp_adults$density_plot_2D()
+cases_hpp_adults$density_plot()
+cases_hpp_adults$density_plot_2D()
+cases_pef_adults$density_plot()
+cases_pef_adults$density_plot_2D()
+cases_tp_adults$cummulative_plot()
+cases_tp_adults$cummulative_plot_2D()
+cases_hpp_adults$cummulative_plot()
+cases_hpp_adults$cummulative_plot_2D()
+cases_pef_adults$cummulative_plot()
+cases_pef_adults$cummulative_plot_2D()
 
 
+```
 
+And for children:
 
-
+```{r}
+#| eval: true
+cases_tp_children$density_plot()
+cases_tp_children$density_plot_2D()
+cases_hpp_children$density_plot()
+cases_hpp_children$density_plot_2D()
+cases_pef_children$density_plot()
+cases_pef_children$density_plot_2D()
+cases_tp_children$cummulative_plot()
+cases_tp_children$cummulative_plot_2D()
+cases_hpp_children$cummulative_plot()
+cases_hpp_children$cummulative_plot_2D()
+cases_pef_children$cummulative_plot()
+cases_pef_children$cummulative_plot_2D()
 
 
 ```
