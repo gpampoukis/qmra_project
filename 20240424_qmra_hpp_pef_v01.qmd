@@ -57,7 +57,7 @@ The literature is mixed but in most cases there is no growth but inactivation is
 
 ## Initial concentration
 
-According to @european_food_safety_authority_urgent_2011, out of 5910 of evegetable and fruit samples during the years 2004-2009, only 11 of them were found positive for STEC (0.19%) and non of them corresponded to fruits (n=2774) or juice (n=317) samples. We will assume that the microorganism of interest is *Escherichia coli.* We will define our initial concentration as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. We assume that this concentration can be described by a uniform distribution with minimum and maximum with equal probabilities to be 2 or 3 log~10~ CFU/ml, respectively. It has some variability which is defined in level 0.
+According to @european_food_safety_authority_urgent_2011, out of 5910 of vegetable and fruit samples during the years 2004-2009, only 11 of them were found positive for STEC (0.19%) and non of them corresponded to fruits (n=2774) or juice (n=317) samples. We will assume that the microorganism of interest is *Escherichia coli.* We will define our initial concentration as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. We assume that this concentration can be described by a uniform distribution with minimum and maximum with equal probabilities to be 2 or 3 log~10~ CFU/ml, respectively. It has some variability which is defined in level 0.
 
 ```{r}
 #| eval: true
@@ -466,9 +466,7 @@ For this stage, we need first to define a dose-response model. We will use the e
 
 $$ P_{\text{ill}} = 1 - e^{(-r \cdot dose)} $$
 
-Another approach would be to use the modified Beta-Binomial model of @cassin_quantitative_1998 (with $alpha = 0.267$ and $beta = 229.2928$), as they did in @frankish_farm_2024:
-$$ P_{\text{ill}} = 1 - \left(1 + \frac{D}{\beta}\right)^{\alpha} $$
-
+Another approach would be to use the modified Beta-Binomial model of @cassin_quantitative_1998 (with $alpha = 0.267$ and $beta = 229.2928$), as they did in @frankish_farm_2024: $$ P_{\text{ill}} = 1 - \left(1 + \frac{D}{\beta}\right)^{\alpha} $$
 
 According to an RIVM study $r = 9.3 \cdot 10^{-3}$ for children and $5.1 \cdot 10^{-3}$ for adults (RIVM reference). Taking the worst-case scenario (children) and assuming a constant pathogen-host survival probability the equation is:
 
@@ -496,27 +494,32 @@ create_pill <- function(name, dose_input, r_value) {
 }
 
 # Create the Pill objects for children and adults separately
-Pill_tp_children <- create_pill("Pill_tp_children", consumer_dose_tp, 9.3e-3)
 Pill_tp_adults <- create_pill("Pill_tp_adults", consumer_dose_tp, 5.1e-3)
-Pill_hpp_children <- create_pill("Pill_hpp_children", consumer_dose_hpp, 9.3e-3)
 Pill_hpp_adults <- create_pill("Pill_hpp_adults", consumer_dose_hpp, 5.1e-3)
-Pill_pef_children <- create_pill("Pill_pef_children", consumer_dose_pef, 9.3e-3)
 Pill_pef_adults <- create_pill("Pill_pef_adults", consumer_dose_pef, 5.1e-3)
+Pill_pef_children <- create_pill("Pill_pef_children", consumer_dose_pef, 9.3e-3)
+Pill_tp_children <- create_pill("Pill_tp_children", consumer_dose_tp, 9.3e-3)
+Pill_hpp_children <- create_pill("Pill_hpp_children", consumer_dose_hpp, 9.3e-3)
+
 
 # Calculate the median values for each dose response object for both children and adults
-median_tp_children <- Pill_tp_children$point_estimate()
-median_tp_adults <- Pill_tp_adults$point_estimate()
-median_hpp_children <- Pill_hpp_children$point_estimate()
-median_hpp_adults <- Pill_hpp_adults$point_estimate()
-median_pef_children <- Pill_pef_children$point_estimate()
-median_pef_adults <- Pill_pef_adults$point_estimate()
 
-print(median_tp_children)
+median_tp_adults <- Pill_tp_adults$point_estimate()
+median_hpp_adults <- Pill_hpp_adults$point_estimate()
+median_pef_adults <- Pill_pef_adults$point_estimate()
+median_tp_children <- Pill_tp_children$point_estimate()
+median_hpp_children <- Pill_hpp_children$point_estimate()
+median_pef_children <- Pill_pef_children$point_estimate()
+
+
+
 print(median_tp_adults)
-print(median_hpp_children)
 print(median_hpp_adults)
-print(median_pef_children)
 print(median_pef_adults)
+print(median_tp_children)
+print(median_hpp_children)
+print(median_pef_children)
+
 
 
 ```
@@ -530,10 +533,13 @@ $$\mu_{\text{mean}} = 10^{12} \cdot P_{\text{ill(median)}}$$
 ```{r}
 #| eval: true
 
+servings_adults <- 0.8*4.6e10
+servings_children <- 0.2*4.6e10
+
 # Calculate the mu_mean values by multiplying each combined median value by 4.6e10
-mu_mean_tp <- 4.6e10 * combined_median_tp
-mu_mean_hpp <- 4.6e10 * combined_median_hpp
-mu_mean_pef <- 4.6e10 * combined_median_pef
+mu_mean_tp <- (median_tp_children * servings_children) + (median_tp_adults * servings_adults)
+mu_mean_hpp <- (median_hpp_children * servings_children) + (median_hpp_adults * servings_adults)
+mu_mean_pef <- (median_pef_children * servings_children) + (median_pef_adults * servings_adults)
 
 # Print the mu_mean values
 print(mu_mean_tp)
@@ -551,62 +557,107 @@ This element considers for each Monte Carlo iteration that the **nservings** hav
 # This function takes two arguments: 'name' and 'pill_input'
 # @param name The name of the Pill2Cases_N object
 # @param pill_input The input object to map to the 'Pill' parameter
+# @param servings_input The input object to map to the 'Pill' parameter
 # @return A Pill2Cases_N object with the specified mappings
 
-create_cases <- function(name, pill_input) {
+create_cases <- function(name, pill_input, servings_input) {
   Pill2Cases_N$new(name)$  # Create a new Pill2Cases_N object with the given name
-    map_input("Pill", Constant$new("Pill", pill_input))$  # Map the 'Pill' input to the provided 'pill_input' argument
-    map_input("servings", Constant$new("n_servings", 4.6e10))  # Map the 'servings' input to a constant value of 4.6e10
+    map_input("Pill", pill_input)$  # Map the 'Pill' input to the provided 'pill_input' argument
+    map_input("servings", Constant$new("n_servings", servings_input))  # Map the 'servings' input to the corresponding value for adults and children
 }
 
 # Create the cases objects for each combined median value
-cases_tp <- create_cases("cases_tp", combined_median_tp)
-cases_hpp <- create_cases("cases_hpp", combined_median_hpp)
-cases_pef <- create_cases("cases_pef", combined_median_pef)
+cases_tp_adults <- create_cases("cases_tp_adults", Pill_tp_adults, 
+servings_adults)
+cases_hpp_adults <- create_cases("cases_hpp_adults", Pill_hpp_adults, servings_adults)
+cases_pef_adults <- create_cases("cases_pef_adults", Pill_pef_adults, servings_adults)
+cases_tp_children <- create_cases("cases_tp_children", Pill_tp_children, servings_children)
+cases_hpp_children <- create_cases("cases_hpp_children", Pill_hpp_children, servings_children)
+cases_pef_children <- create_cases("cases_pef_children", Pill_pef_children, servings_children)
 
 # Calculate and print the number of cases for each Pill object
-cases_tp_value <- cases_tp$point_estimate()
-cases_hpp_value <- cases_hpp$point_estimate()
-cases_pef_value <- cases_pef$point_estimate()
+cases_tp_adults_value <- cases_tp_adults$point_estimate()
+cases_hpp_adults_value <- cases_hpp_adults$point_estimate()
+cases_pef__adults_value <- cases_pef_adults$point_estimate()
+cases_tp_children_value <- cases_tp_children$point_estimate()
+cases_hpp_children_value <- cases_hpp_children$point_estimate()
+cases_pef_children_value <- cases_pef_children$point_estimate()
 
-print(cases_tp_value)
-print(cases_hpp_value)
-print(cases_pef_value)
-
+print(cases_tp_adults_value)
+print(cases_hpp_adults_value)
+print(cases_pef__adults_value)
+print(cases_tp_children_value)
+print(cases_hpp_children_value)
+print(cases_pef_children_value)
 
 ```
 
 # Summary of Initial concentration + Inactivation + Growth during distribution + Risk characterization (full model)
 
 ::: panel-tabset
-#### Thermal processing model
+#### Thermal processing model (adults)
 
 ```{r}
 #| eval: false
 #| echo: false 
-plot_model(cases_tp)
+plot_model(cases_tp_adults)
 
 
 ```
 
 ![](cases_tp.png)
 
-#### HPP model
+#### HPP model (adults)
 
 ```{r}
 #| eval: false
 #| echo: false 
-plot_model(cases_hpp)
+plot_model(cases_hpp_adults)
 ```
 
 ![](cases_hpp.png)
 
-#### PEF model
+#### PEF model (adults)
 
 ```{r}
 #| eval: false
 #| echo: false 
-plot_model(cases_pef)
+plot_model(cases_pef_adults)
+
+```
+
+![](cases_pef.png)
+:::
+
+::: panel-tabset
+#### Thermal processing model (children)
+
+```{r}
+#| eval: false
+#| echo: false 
+plot_model(cases_tp_children)
+
+
+```
+
+![](cases_tp.png)
+
+#### HPP model (children)
+
+```{r}
+#| eval: false
+#| echo: false 
+plot_model(cases_hpp_children)
+```
+
+![](cases_hpp.png)
+
+#### PEF model(children)
+
+```{r}
+#| eval: false
+#| echo: false 
+plot_model(cases_pef_children)
 
 ```
 
@@ -621,9 +672,12 @@ plot_model(cases_pef)
 
 # Let's check our dependencies to see if we made any mistake in the dependencies of the model, regarding the consistency of the variable names.
 
-cases_tp$check_input_types(recursive = TRUE)
-cases_hpp$check_input_types(recursive = TRUE)
-cases_pef$check_input_types(recursive = TRUE)
+cases_tp_adults$check_input_types(recursive = TRUE)
+cases_hpp_adults$check_input_types(recursive = TRUE)
+cases_pef_adults$check_input_types(recursive = TRUE)
+cases_tp_children$check_input_types(recursive = TRUE)
+cases_hpp_children$check_input_types(recursive = TRUE)
+cases_pef_children$check_input_types(recursive = TRUE)
 
 # Warning: In element Pill: the element expects discrete for input dose. Got continuous instead from dose. We cannot have 321.1 CFU but we made this simplification, this would work if we would take the discrete models of the other case study
 
@@ -636,18 +690,24 @@ Then, we continue with our 1D Monte Carlo:
 
 ```{r}
 #| eval: true
-cases_tp$simulate(100000, seed = 241)
-cases_hpp$simulate(100000, seed = 241)
-cases_pef$simulate(100000, seed = 241)
+cases_tp_adults$simulate(100000, seed = 241)
+cases_hpp_adults$simulate(100000, seed = 241)
+cases_pef_adults$simulate(100000, seed = 241)
+cases_tp_children$simulate(100000, seed = 241)
+cases_hpp_children$simulate(100000, seed = 241)
+cases_pef_children$simulate(100000, seed = 241)
 ```
 
 We can now visualize the number of cases per $10^{12}$ servings, as a histogram. We will use the log transform due to the heavy tail, but this removes also the 0s i.e., the simulations that lead to 0 cases. Therefore we also need to know how many are the 0s in our simulations (it's in the warning created). We will also add a discrete line with the approximate as estimated before. (Note that this is quite biased with respect to the histogram. The reasons for this is the use of asymmetric distributions and the nonlinear models).
 
 ```{r}
 #| eval: true
-cases_tp$histogram(add_discrete = TRUE) + scale_x_log10()
-cases_hpp$histogram(add_discrete = TRUE) + scale_x_log10()
-cases_pef$histogram(add_discrete = TRUE) + scale_x_log10()
+cases_tp_adults$histogram(add_discrete = TRUE) + scale_x_log10()
+cases_hpp_adults$histogram(add_discrete = TRUE) + scale_x_log10()
+cases_pef_adults$histogram(add_discrete = TRUE) + scale_x_log10()
+cases_tp_children$histogram(add_discrete = TRUE) + scale_x_log10()
+cases_hpp_children$histogram(add_discrete = TRUE) + scale_x_log10()
+cases_pef_children$histogram(add_discrete = TRUE) + scale_x_log10()
 
 ```
 
@@ -665,13 +725,22 @@ Now we will take a look at the quantiles
 ```{r}
 #| eval: true
 
-quantile_table(cases_tp, chosen = c("cases", "Pill", "dose", "Treatment_tp"),
+quantile_table(cases_tp_adults, chosen = c("cases", "Pill", "dose", "Treatment_tp"),
                probs = c(0.50, 0.90, 0.99))
 
-quantile_table(cases_hpp, chosen = c("cases", "Pill", "dose", "Treatment_hpp"),
+quantile_table(cases_hpp_adults, chosen = c("cases", "Pill", "dose", "Treatment_hpp"),
                probs = c(0.50, 0.90, 0.99))
 
-quantile_table(cases_pef, chosen = c("cases", "Pill", "dose", "Treatment_pef"),
+quantile_table(cases_pef_adults, chosen = c("cases", "Pill", "dose", "Treatment_pef"),
+               probs = c(0.50, 0.90, 0.99))
+
+quantile_table(cases_tp_children, chosen = c("cases", "Pill", "dose", "Treatment_tp"),
+               probs = c(0.50, 0.90, 0.99))
+
+quantile_table(cases_hpp_children, chosen = c("cases", "Pill", "dose", "Treatment_hpp"),
+               probs = c(0.50, 0.90, 0.99))
+
+quantile_table(cases_pef_children, chosen = c("cases", "Pill", "dose", "Treatment_pef"),
                probs = c(0.50, 0.90, 0.99))
 
 ```
@@ -690,21 +759,25 @@ It would also be nice to monitor the variation of the microbial concentration on
 # List of cases objects
 inactivation_obj <- list(inactivation_tp, inactivation_hpp, inactivation_pef)
 
-# Function to plot outputs for a given case object and growth distribution name
-plot_case_outputs <- function(cases_obj, inactivation_obj) {
-  plot_outputs(cases_obj, chosen = c("logN0", "Treatment_tp", "Treatment_hpp", "Treatment_pef"))
+# Names of the processing methods
+processing_methods <- c("Thermal processing", "High Pressure Processing", "Pulsed Electric Fields")
+
+# General function to plot outputs for a given inactivation object and processing method
+plot_case_outputs <- function(inactivation_obj, method) {
+  plot_outputs(inactivation_obj, chosen = c("logN0", "Treatment_tp", "Treatment_hpp", "Treatment_pef")) +
+    ggtitle(method)
 }
 
-
 # Use mapply to plot the outputs and print each plot
-plots <- mapply(function(cases_obj, inactivation_obj) {
-  p <- plot_case_outputs(cases_obj, inactivation_obj)
+plots <- mapply(function(inactivation_obj, method) {
+  p <- plot_case_outputs(inactivation_obj, method)
   print(p)
-}, cases_obj, inactivation_obj)
+}, inactivation_obj, processing_methods)
 
 #1 Thermal processing
 #2 High Pressure Processing
 #3 PEF processing
+
 
 ```
 
@@ -713,22 +786,23 @@ plots <- mapply(function(cases_obj, inactivation_obj) {
 ```{r}
 #| eval: true
 
-# Function to plot outputs for a given case object and growth distribution name
-plot_case_outputs <- function(cases_obj, inactivation_obj) {
-  plot_outputs(cases_obj, chosen = c("logN0", "Treatment_tp", "Treatment_hpp", "Treatment_pef"),
-type = "violin")
+# List of inactivation objects
+inactivation_obj <- list(inactivation_tp, inactivation_hpp, inactivation_pef)
+
+# Names of the processing methods
+processing_methods <- c("Thermal processing", "High Pressure Processing", "Pulsed Electric Fields")
+
+# General function to plot outputs for a given inactivation object and processing method
+plot_case_outputs <- function(inactivation_obj, method) {
+  plot_outputs(inactivation_obj, chosen = c("logN0", "Treatment_tp", "Treatment_hpp", "Treatment_pef"), type = "violin") +
+    ggtitle(method)
 }
 
-
 # Use mapply to plot the outputs and print each plot
-plots <- mapply(function(cases_obj, inactivation_obj) {
-  p <- plot_case_outputs(cases_obj, inactivation_obj)
+plots <- mapply(function(inactivation_obj, method) {
+  p <- plot_case_outputs(inactivation_obj, method)
   print(p)
-}, cases_obj, inactivation_obj)
-
-#1 Thermal processing
-#2 High Pressure Processing
-#3 PEF processing
+}, inactivation_obj, processing_methods)
 
 ```
 
@@ -737,36 +811,36 @@ plots <- mapply(function(cases_obj, inactivation_obj) {
 ```{r}
 #| eval: true
 
-# Function to plot outputs for a given case object and growth distribution name
-plot_case_outputs <- function(cases_obj, inactivation_obj) {
-  plot_outputs(cases_obj, chosen = c("logN0", "Treatment_tp", "Treatment_hpp", "Treatment_pef"),
-type = "density")
+# List of inactivation objects
+inactivation_obj <- list(inactivation_tp, inactivation_hpp, inactivation_pef)
+
+# Names of the processing methods
+processing_methods <- c("Thermal processing", "High Pressure Processing", "Pulsed Electric Fields")
+
+# General function to plot outputs for a given inactivation object and processing method
+plot_case_outputs <- function(inactivation_obj, method) {
+  plot_outputs(inactivation_obj, chosen = c("logN0", "Treatment_tp", "Treatment_hpp", "Treatment_pef"), type = "density") +
+    ggtitle(method)
 }
 
-
 # Use mapply to plot the outputs and print each plot
-plots <- mapply(function(cases_obj, inactivation_obj) {
-  p <- plot_case_outputs(cases_obj, inactivation_obj)
+plots <- mapply(function(inactivation_obj, method) {
+  p <- plot_case_outputs(inactivation_obj, method)
   print(p)
-}, cases_obj, inactivation_obj)
+}, inactivation_obj, processing_methods)
 
-#1 Thermal processing
-#2 High Pressure Processing
-#3 PEF processing
-
-
-#1 Thermal processing
-#2 High Pressure Processing
-#3 PEF processing
 ```
 :::
 
 Let's perform also a sensitiviy analysis for the overall model (**cases**):
 
 ```{r}
-tornado_plot(cases_tp)
-tornado_plot(cases_hpp)
-tornado_plot(cases_pef)
+tornado_plot(cases_tp_adults)
+tornado_plot(cases_hpp_adults)
+tornado_plot(cases_pef_adults)
+tornado_plot(cases_tp_children)
+tornado_plot(cases_hpp_children)
+tornado_plot(cases_pef_children)
 ```
 
 ## Simulation as a 2D Monte Carlo
@@ -776,9 +850,12 @@ For the 2D-MC simulation we need two inputs, the number of simulations for level
 ```{r}
 #| eval: true
 
-cases_tp$simulate_2D(1000, 100, seed = 792)
-cases_hpp$simulate_2D(1000, 100, seed = 792)
-cases_pef$simulate_2D(1000, 100, seed = 792)
+cases_tp_adults$simulate_2D(1000, 100, seed = 792)
+cases_hpp_adults$simulate_2D(1000, 100, seed = 792)
+cases_pef_adults$simulate_2D(1000, 100, seed = 792)
+cases_tp_children$simulate_2D(1000, 100, seed = 792)
+cases_hpp_children$simulate_2D(1000, 100, seed = 792)
+cases_pef_children$simulate_2D(1000, 100, seed = 792)
 
 inactivation_tp$density_plot()
 inactivation_tp$density_plot_2D()
@@ -808,13 +885,22 @@ And our quantiles, as we did before. In this case, the quantiles are calculated 
 #| eval: false
 #| echo: false
 
-quantile_table_2D(cases_tp, chosen = c("cases", "Pill", "dose"),
+quantile_table_2D(cases_tp_adults, chosen = c("cases_tp_adults", "Pill_tp_adults", "consumer_dose_tp"),
                probs = c(0.50, 0.90, 0.99))
 
-quantile_table_2D(cases_hpp, chosen = c("cases", "Pill", "dose"),
+quantile_table_2D(cases_hpp_adults, chosen = c("cases_hpp_adults", "Pill_hpp_adults", "consumer_dose_hpp"),
                probs = c(0.50, 0.90, 0.99))
 
-quantile_table_2D(cases_pef, chosen = c("cases", "Pill", "dose"),
+quantile_table_2D(cases_pef_adults, chosen = c("cases_pef_adults", "Pill_pef_adults", "consumer_dose_pef"),
+               probs = c(0.50, 0.90, 0.99))
+
+quantile_table_2D(cases_tp_children, chosen = c("cases_tp_children", "Pill_tp_children", "consumer_dose_tp"),
+               probs = c(0.50, 0.90, 0.99))
+
+quantile_table_2D(cases_hpp_children, chosen = c("cases_hpp_children", "Pill_hpp_children", "consumer_dose_hpp"),
+               probs = c(0.50, 0.90, 0.99))
+
+quantile_table_2D(cases_pef_children, chosen = c("cases_pef_children", "Pill_pef_children", "consumer_dose_pef"),
                probs = c(0.50, 0.90, 0.99))
 
 
