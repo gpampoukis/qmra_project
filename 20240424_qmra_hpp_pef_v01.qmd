@@ -21,7 +21,7 @@ The purpose of this QMRA is to estimate the impact of replacing conventional pas
 
 # Scope of QMRA
 
-The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., "the juice is pumped to a holding tank") until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles) iii., consumer phase.
+The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., "the juice is pumped to a holding tank") until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles, no contamination there according to the HACCP examples from FDA) iii., consumer phase.
 
 # A case study for juice treatment with HPP - Model definition
 
@@ -49,11 +49,11 @@ Low-acid juices, such as carrot juice, that are distributed under refrigeration,
 
 ## Previous QMRAs in the domain
 
-One for apples is @frankish_farm_2024 and another one for apple cider is @duffy_modeling_2001.
+One for apples is @frankish_farm_2024 and another one for assessing the initial contamination in apple cider is @duffy_monte_2002 and the potential of growth in @duffy_modeling_2001
 
 ## Regarding growth
 
-The literature is mixed but in most cases there is no growth but inactivation isntead @duffy_modeling_2001 have shown that the behaviour can be simulated with a logistic or a uniform distribution based on the storage temperatures (but they say that overall there was a decline although a small fraction of the time a slight increase was seen)
+The literature is mixed but in most cases there is no growth but inactivation instead, so @duffy_modeling_2001 have shown that the behaviour can be simulated with a logistic or a uniform distribution based on the storage temperatures (but they say that overall there was a decline although a small fraction of the time a slight increase was seen)
 
 ## Initial concentration
 
@@ -88,7 +88,7 @@ logN0 <- Uniform$new("logN0", # A uniform distribution
 
 # The equivalent scenario without variability
 
-logN0 <- Constant$new("logN0", -6)
+logN0 <- Constant$new("logN0", 0)
 
 ```
 
@@ -263,14 +263,14 @@ $$
 \log_{10}N = \log_{10}N_0 - \frac{E_i}{D_{E_i}}
 $$ {#eq-primary-energy}
 
-Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and *E. coli*. The *D* was estimated as 82.5 kJ/L and thus we used a uniform distribution for that with a minimum of 70 kJ/L and a maximum of 90 kJ/L. According to @aganovic_environmental_2022, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 $kg/L$). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.
+Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and *E. coli*. The *D* was estimated as 50.4 kJ/L and thus we used a uniform distribution for that with a minimum of 60 kJ/L and a maximum of 80 kJ/L. According to @aganovic_environmental_2022, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 $kg/L$). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.
 
 ```{r}
 #| eval: false
 #| echo: false
 # D_pef <- Uniform$new("D_pef", level = 0)$  # Variability in D_pef
-  # map_input("min", Constant$new("D_pef_min", 70))$
-  # map_input("max", Constant$new("D_pef_max", 90))
+  # map_input("min", Constant$new("D_pef_min", 60))$
+  # map_input("max", Constant$new("D_pef_max", 80))
 
 energy_pef <- Normal$new("energy_pef", level = 0)$  # Normal energy input level with some variability assigned
   map_input("mu", Constant$new("energy_mu", 120))$
@@ -278,7 +278,7 @@ energy_pef <- Normal$new("energy_pef", level = 0)$  # Normal energy input level 
 
 inactivation_pef <- LogLinInactivation$new("Treatment_pef")$
   map_input("logN0", logN0)$ #We map logN0 to the initial count defined before
-  map_input("D", Constant$new("D_pef", 82.5))$
+  map_input("D", Constant$new("D_pef", 50.4))$
   map_input("t", energy_pef)
 
 ```
@@ -291,7 +291,7 @@ inactivation_pef <- LogLinInactivation$new("Treatment_pef")$
 
 inactivation_pef <- LogLinInactivation$new("Treatment_pef")$
   map_input("logN0", logN0)$ #We map logN0 to the initial count defined before
-  map_input("D", Constant$new("D_pef", 82.5))$
+  map_input("D", Constant$new("D_pef", 50.4))$
   map_input("t", Constant$new("energy_mu", 120))
 ```
 

@@ -3159,7 +3159,7 @@ window.Quarto = {
 </section>
 <section id="scope-of-qmra" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Scope of QMRA</h1>
-<p>The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., “the juice is pumped to a holding tank”) until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles) iii., consumer phase.</p>
+<p>The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., “the juice is pumped to a holding tank”) until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles, no contamination there according to the HACCP examples from FDA) iii., consumer phase.</p>
 </section>
 <section id="a-case-study-for-juice-treatment-with-hpp---model-definition" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> A case study for juice treatment with HPP - Model definition</h1>
@@ -3182,11 +3182,11 @@ window.Quarto = {
 <p>Low-acid juices, such as carrot juice, that are distributed under refrigeration, and are not subject to the Low Acid Canned Foods regulation (21 CFR Part 113) may pose hazards associated with spore forming pathogens, specifically, toxins of non-proteolytic and proteolytic strains of Clostridium botulinum. Control measures for such juices are likely to involve multiple measures, e.g., a combination of a process step to destroy the non-proteolytic spores and measures to ensure that “Keep Refrigerated” labeling is used for the juice if the juice does not receive a treatment sufficient to destroy the proteolytic spores (Destruction of spores of the proteolytic strains requires a more severe heat treatment but germination and growth of these spores may be prevented by keeping the product under refrigeration during its lifecycle. Destruction of spores of the non-proteolytic strains requires a less severe heat treatment, but these spores can germinate and produce toxin even under refrigerated storage conditions) <span class="citation" data-cites="nutrition_guidance_2024">(<a href="#ref-nutrition_guidance_2024" role="doc-biblioref">Nutrition 2024</a>)</span>.</p>
 <section id="previous-qmras-in-the-domain" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="previous-qmras-in-the-domain"><span class="header-section-number">4.1</span> Previous QMRAs in the domain</h2>
-<p>One for apples is <span class="citation" data-cites="frankish_farm_2024">Frankish, Bozkurt, and Ross (<a href="#ref-frankish_farm_2024" role="doc-biblioref">2024</a>)</span> and another one for apple cider is <span class="citation" data-cites="duffy_modeling_2001">Duffy and Schaffner (<a href="#ref-duffy_modeling_2001" role="doc-biblioref">2001</a>)</span>.</p>
+<p>One for apples is <span class="citation" data-cites="frankish_farm_2024">Frankish, Bozkurt, and Ross (<a href="#ref-frankish_farm_2024" role="doc-biblioref">2024</a>)</span> and another one for assessing the initial contamination in apple cider is <span class="citation" data-cites="duffy_monte_2002">Duffy and Schaffner (<a href="#ref-duffy_monte_2002" role="doc-biblioref">2002</a>)</span> and the potential of growth in <span class="citation" data-cites="duffy_modeling_2001">Duffy and Schaffner (<a href="#ref-duffy_modeling_2001" role="doc-biblioref">2001</a>)</span></p>
 </section>
 <section id="regarding-growth" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="regarding-growth"><span class="header-section-number">4.2</span> Regarding growth</h2>
-<p>The literature is mixed but in most cases there is no growth but inactivation isntead <span class="citation" data-cites="duffy_modeling_2001">Duffy and Schaffner (<a href="#ref-duffy_modeling_2001" role="doc-biblioref">2001</a>)</span> have shown that the behaviour can be simulated with a logistic or a uniform distribution based on the storage temperatures (but they say that overall there was a decline although a small fraction of the time a slight increase was seen)</p>
+<p>The literature is mixed but in most cases there is no growth but inactivation instead, so <span class="citation" data-cites="duffy_modeling_2001">Duffy and Schaffner (<a href="#ref-duffy_modeling_2001" role="doc-biblioref">2001</a>)</span> have shown that the behaviour can be simulated with a logistic or a uniform distribution based on the storage temperatures (but they say that overall there was a decline although a small fraction of the time a slight increase was seen)</p>
 </section>
 <section id="initial-concentration" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="initial-concentration"><span class="header-section-number">4.3</span> Initial concentration</h2>
@@ -3194,7 +3194,7 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The equivalent scenario without variability</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>logN0 <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0&quot;</span>, <span class="sc">-</span><span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>logN0 <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0&quot;</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="inactivation-using-thermal-processing" class="level2" data-number="4.4">
@@ -3285,13 +3285,13 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <p><span id="eq-primary-energy"><span class="math display">\[
 \log_{10}N = \log_{10}N_0 - \frac{E_i}{D_{E_i}}
 \tag{4}\]</span></span></p>
-<p>Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and <em>E. coli</em>. The <em>D</em> was estimated as 82.5 kJ/L and thus we used a uniform distribution for that with a minimum of 70 kJ/L and a maximum of 90 kJ/L. According to <span class="citation" data-cites="aganovic_environmental_2022">Aganovic and Smetana (<a href="#ref-aganovic_environmental_2022" role="doc-biblioref">2022</a>)</span>, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 <span class="math inline">\(kg/L\)</span>). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.</p>
+<p>Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and <em>E. coli</em>. The <em>D</em> was estimated as 50.4 kJ/L and thus we used a uniform distribution for that with a minimum of 60 kJ/L and a maximum of 80 kJ/L. According to <span class="citation" data-cites="aganovic_environmental_2022">Aganovic and Smetana (<a href="#ref-aganovic_environmental_2022" role="doc-biblioref">2022</a>)</span>, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 <span class="math inline">\(kg/L\)</span>). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The equivalent without variability</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>inactivation_pef <span class="ot">&lt;-</span> LogLinInactivation<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Treatment_pef&quot;</span>)<span class="sc">$</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;logN0&quot;</span>, logN0)<span class="sc">$</span> <span class="co">#We map logN0 to the initial count defined before</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;D&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_pef&quot;</span>, <span class="fl">82.5</span>))<span class="sc">$</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;D&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_pef&quot;</span>, <span class="fl">50.4</span>))<span class="sc">$</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;t&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;energy_mu&quot;</span>, <span class="dv">120</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -3404,27 +3404,27 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>inactivation_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -50.61281</code></pre>
+<pre><code>[1] -44.61281</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>inactivation_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -8.39595</code></pre>
+<pre><code>[1] -2.39595</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>inactivation_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -7.454545</code></pre>
+<pre><code>[1] -2.380952</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.877748e-49</code></pre>
+<pre><code>[1] 4.877748e-43</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.036747e-07</code></pre>
+<pre><code>[1] 0.8036747</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 7.022383e-06</code></pre>
+<pre><code>[1] 0.8319124</code></pre>
 </div>
 </div>
 </section>
@@ -3477,11 +3477,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.098741e-09</code></pre>
+<pre><code>[1] 0.004090352</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.581416e-08</code></pre>
+<pre><code>[1] 0.004233766</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3489,11 +3489,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 7.474174e-09</code></pre>
+<pre><code>[1] 0.007446312</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 6.530816e-08</code></pre>
+<pre><code>[1] 0.007706934</code></pre>
 </div>
 </div>
 <p>Then, we can estimate the number of cases. For that, <strong>biorisk</strong> includes the <strong>Pill2Cases_N</strong> element to convert from probability of illness to number of cases, assuming that the number of cases can be described by a binomial distribution as shown below:</p>
@@ -3515,11 +3515,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_hpp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 219.5961</code></pre>
+<pre><code>[1] 219031039</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_pef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1918.796</code></pre>
+<pre><code>[1] 226706366</code></pre>
 </div>
 </div>
 <p>This element considers for each Monte Carlo iteration that the <strong>nservings</strong> have the same probability of illness. On the other hand, the element <strong>Pill2Cases_1</strong> considers a single serving per Pill. In this case, we will make the calculations per <span class="math inline">\(10^{12}\)</span> servings.</p>
@@ -3560,11 +3560,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 150.8337</code></pre>
+<pre><code>[1] 150524968</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef__adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1317.961</code></pre>
+<pre><code>[1] 155802576</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3572,11 +3572,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 68.7624</code></pre>
+<pre><code>[1] 68506072</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 600.8351</code></pre>
+<pre><code>[1] 70903790</code></pre>
 </div>
 </div>
 </section>
@@ -3659,6 +3659,9 @@ Besten, Heidy M. W. den, and Marcel H. Zwietering. 2012. <span>“Meta-Analysis 
 </div>
 <div id="ref-cassin_quantitative_1998" class="csl-entry" role="listitem">
 Cassin, Michael H., Anna M. Lammerding, Ewen C. D. Todd, William Ross, and R. Stephen McColl. 1998. <span>“Quantitative Risk Assessment for <em><span>Escherichia</span> Coli</em> <span>O157</span>:<span>H7</span> in Ground Beef Hamburgers.”</span> <em>International Journal of Food Microbiology</em> 41 (1): 21–44. <a href="https://doi.org/10.1016/S0168-1605(98)00028-2">https://doi.org/10.1016/S0168-1605(98)00028-2</a>.
+</div>
+<div id="ref-duffy_monte_2002" class="csl-entry" role="listitem">
+Duffy, Siobain, and Donald W Schaffner. 2002. <span>“Monte <span>Carlo</span> Simulation of the Risk of Contamination of Apples with <em><span>Escherichia</span> Coli</em> <span>O157</span>:<span>H7</span>.”</span> <em>International Journal of Food Microbiology</em> 78 (3): 245–55. <a href="https://doi.org/10.1016/S0168-1605(02)00112-5">https://doi.org/10.1016/S0168-1605(02)00112-5</a>.
 </div>
 <div id="ref-duffy_modeling_2001" class="csl-entry" role="listitem">
 Duffy, Siobain, and Donald W. Schaffner. 2001. <span>“Modeling the <span>Survival</span> of <span>Escherichia</span> Coli <span>O157</span>:<span>H7</span> in <span>Apple</span> <span>Cider</span> <span>Using</span> <span>Probability</span> <span>Distribution</span> <span>Functions</span> for <span>Quantitative</span> <span>Risk</span> <span>Assessment</span>.”</span> <em>Journal of Food Protection</em> 64 (5): 599–605. https://doi.org/<a href="https://doi.org/10.4315/0362-028X-64.5.599">https://doi.org/10.4315/0362-028X-64.5.599</a>.
