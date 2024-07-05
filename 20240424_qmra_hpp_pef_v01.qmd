@@ -49,7 +49,7 @@ Low-acid juices, such as carrot juice, that are distributed under refrigeration,
 
 ## Previous QMRAs in the domain
 
-One for apples is @frankish_farm_2024 and another one for assessing the initial contamination in apple cider is @duffy_monte_2002 and the potential of growth in @duffy_modeling_2001
+One for apples is @frankish_farm_2024 and another one for assessing the initial contamination in apple cider is @duffy_monte_2002 and the potential of growth in @duffy_modeling_2001. One QMRA for apple juice and UV process conditions is @gayan_selection_2014.
 
 ## Regarding growth
 
