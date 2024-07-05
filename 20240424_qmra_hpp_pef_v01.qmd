@@ -27,7 +27,7 @@ The scope of this QMRA is to include and assess the effects of the step of the j
 
 # Background
 
-Since 1974, fruit juices have been implicated in more than 48 foodborne disease outbreaks, involving more than 5905 cases in various countries [@martinez-gonzales_safety_2016]. Outbreaks of Shiga-toxin-producing *E. coli* (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (@topalcengiz_thermal_2017). According to the FDA, *E. coli* and *Cryptosporidium parvum* are both pertinent microorganisms Although in most cases the growth of STEC will not occur but the survival will last (depending on the fruit juice) from 3 to 84 days[@erickson_food_2007], the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) \[[\@kernou_inactivation_2023; \@mutaku_growth_2005; \@skandamis_modeling_2007; \@topalcengiz_thermal_2017; \@foster_acid_2001](spit%20the%20references%20here%20and%20add%20more%20text)\] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance [@topalcengiz_thermal_2017]. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).
+Since 1974, fruit juices have been implicated in more than 48 reported foodborne disease outbreaks, involving more than 5905 cases in various countries [@martinez-gonzales_safety_2016]. Outbreaks of Shiga-toxin-producing *E. coli* (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (@topalcengiz_thermal_2017). According to the FDA, *E. coli* and *Cryptosporidium parvum* are both pertinent microorganisms Although in most cases the growth of STEC will not occur but the survival will last (depending on the fruit juice) from 3 to 84 days[@erickson_food_2007], the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) \[[\@kernou_inactivation_2023; \@mutaku_growth_2005; \@skandamis_modeling_2007; \@topalcengiz_thermal_2017; \@foster_acid_2001](spit%20the%20references%20here%20and%20add%20more%20text)\] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance [@topalcengiz_thermal_2017]. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).
 
 -   According to the FDA, The 5-log pathogen reduction must
 
@@ -49,7 +49,7 @@ Low-acid juices, such as carrot juice, that are distributed under refrigeration,
 
 ## Previous QMRAs in the domain
 
-One for apples is @frankish_farm_2024 and another one for assessing the initial contamination in apple cider is @duffy_monte_2002 and the potential of growth in @duffy_modeling_2001. One QMRA for apple juice and UV process conditions is @gayan_selection_2014.
+One for apples is @frankish_farm_2024 and another one for assessing the initial contamination in apple cider is @duffy_monte_2002 and the potential of growth in @duffy_modeling_2001. One QMRA for apple juice and selecting UV process conditions is @gayan_selection_2014.
 
 ## Regarding growth
 
@@ -57,7 +57,7 @@ The literature is mixed but in most cases there is no growth but inactivation in
 
 ## Initial concentration
 
-According to @european_food_safety_authority_urgent_2011, out of 5910 of vegetable and fruit samples during the years 2004-2009, only 11 of them were found positive for STEC (0.19%) and non of them corresponded to fruits (n=2774) or juice (n=317) samples. We will assume that the microorganism of interest is *Escherichia coli.* We will define our initial concentration as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. We assume that this concentration can be described by a uniform distribution with minimum and maximum with equal probabilities to be 2 or 3 log~10~ CFU/ml, respectively. It has some variability which is defined in level 0.
+According to @european_food_safety_authority_urgent_2011, out of 5910 of vegetable and fruit samples during the years 2004-2009, only 11 of them were found positive for STEC (0.19%) and non of them corresponded to fruits (n=2774) or juice (n=317) samples. We will assume that the microorganism of interest is *Escherichia coli.* We will define our initial concentration as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. According to @gayan_selection_2014 that used the FSO defined for enteric pathogens from the contamination of E. coli O157:H7 of the freshly pressed apple juice before pasteurization must not exceed 10 CFU/ml. Thus, we assume that this concentration can be described by a uniform distribution with minimum and maximum with equal probabilities to be 0 or 1 log~10~ CFU/ml, respectively. It has some variability which is defined in level 0.
 
 ```{r}
 #| eval: true
