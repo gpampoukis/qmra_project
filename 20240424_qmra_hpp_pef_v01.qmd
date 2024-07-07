@@ -17,7 +17,7 @@ bibliography: qmra_hpp_pef.bib
 
 # Statement of purpose
 
-The purpose of this QMRA is to estimate the impact of replacing conventional pasteurization processing with Pulsed Electric Fields or High-Pressure processing on the annual cases of illness caused by *Escherichia coli* after consuming "pasteurized" refrigerated fruit juice (from fresh fruits and not from concentrates). To accurately integrate the effect of processing (thermal, high-pressure, pulsed electric field) on the annual cases of illness, the approach of meta-analysis models (meta-regression) was used to quantitatively integrate the findings of many individual studies [@den_besten_meta-analysis_2012].
+The purpose of this QMRA is to estimate the impact of replacing conventional pasteurization processing with Pulsed Electric Fields or High-Pressure processing on the annual cases of illness caused by *Escherichia coli* after consuming "pasteurized" refrigerated, high-acidic fruit juice (from fresh fruits and not from concentrates). To accurately integrate the effect of processing (thermal, high-pressure, pulsed electric field) on the annual cases of illness, the approach of meta-analysis models (meta-regression) was used to quantitatively integrate the findings of many individual studies [@den_besten_meta-analysis_2012].
 
 # Scope of QMRA
 
@@ -160,7 +160,7 @@ Dref_tp <- Constant$new("Dref_tp", Drefupper)
 
 sec_model_tp <- Dz_model$new("D_tp")$
   map_input("Dref", Dref_tp)$
-  map_input("temperature", Constant$new("temperature", 72))$
+  map_input("temperature", Constant$new("temperature", 71.111))$
   map_input("z", Constant$new("z_tp", 5.602))$ #this is the value from Esther for fruit juices and ciders without other additives
   map_input("Tref", Constant$new("Tref", 70))
 ```
@@ -177,7 +177,7 @@ Dref_tp <- Constant$new("Dref_tp", Dref)
 
 sec_model_tp <- Dz_model$new("D_tp")$
   map_input("Dref", Dref_tp)$
-  map_input("temperature", Constant$new("temperature", 72))$
+  map_input("temperature", Constant$new("temperature", 71.111))$
   map_input("z", Constant$new("z_tp", 5.602))$ #this is the value from Esther for fruit juices and ciders without other additives
   map_input("Tref", Constant$new("Tref", 70))
 ```
@@ -185,7 +185,7 @@ sec_model_tp <- Dz_model$new("D_tp")$
 And now let's plug our secondary model to the primary one setting the treatment to 20 seconds:
 
 ```{r}
-t_tp <- Constant$new("t_tp", 0.333) # the treatment time (minutes)
+t_tp <- Constant$new("t_tp", 0.1) # the treatment time (minutes, 6 seconds)
 
 inactivation_tp <- LogLinInactivation$new("Treatment_tp")$
   map_input("logN0", logN0)$ #We map logN0 to the initial count defined before
@@ -202,7 +202,7 @@ $$
 \ LogD = 1.434 -0.000329 \cdot P
 $$ {#eq-secondary-pressure}
 
-This model is the same with the one showed above in @eq-secondary but with using pressure instead of temperature. The *z~p~* can be estimated as the negative inverse of the slope i.e., 304 MPa. For the Pref we will use 400 Mpa. The treatment pressure *P* is described by a normal distribution with mean 550 MPa and standard deviation 20 MPa (variability i.e., level = 0). Dref (at the Pref) was estimated as 1.3 minutes from the @eq-secondary-pressure but we assume that is described by a uniform distribution with a minimum of 1 minute and maximum of 4 minutes (variability i.e., level = 0). The treatment time in this case is assumed to be 5 minutes.
+This model is the same with the one showed above in @eq-secondary but with using pressure instead of temperature. The *z~p~* can be estimated as the negative inverse of the slope i.e., 304 MPa. For the Pref we will use 400 MPa. The treatment pressure *P* is described by a normal distribution with mean 550 MPa and standard deviation 20 MPa (variability i.e., level = 0) (550 MPa for 1 minute is a relevant combination according to Hiperbaric insights). Dref (at the Pref) was estimated as 1.3 minutes from the @eq-secondary-pressure but we assume that is described by a uniform distribution with a minimum of 1 minute and maximum of 4 minutes (variability i.e., level = 0). The treatment time in this case is assumed to be 5 minutes.
 
 Let's implement those changes:
 
