@@ -3166,7 +3166,7 @@ window.Quarto = {
 </section>
 <section id="background" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Background</h1>
-<p>Since 1974, fruit juices have been implicated in more than 48 reported foodborne disease outbreaks, involving more than 5905 cases in various countries <span class="citation" data-cites="martinez-gonzales_safety_2016">(<a href="#ref-martinez-gonzales_safety_2016" role="doc-biblioref">Martínez-Gonzáles and Castillo 2016</a>)</span>. Outbreaks of Shiga-toxin-producing <em>E. coli</em> (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (<span class="citation" data-cites="topalcengiz_thermal_2017">Topalcengiz and Danyluk (<a href="#ref-topalcengiz_thermal_2017" role="doc-biblioref">2017</a>)</span>). According to the FDA, <em>E. coli</em> and <em>Cryptosporidium parvum</em> are both pertinent microorganisms Although in most cases the growth of STEC will not occur but the survival will last (depending on the fruit juice) from 3 to 84 days<span class="citation" data-cites="erickson_food_2007">(<a href="#ref-erickson_food_2007" role="doc-biblioref">Erickson and Doyle 2007</a>)</span>, the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) [<a href="spit%20the%20references%20here%20and%20add%20more%20text">@kernou_inactivation_2023; @mutaku_growth_2005; @skandamis_modeling_2007; @topalcengiz_thermal_2017; @foster_acid_2001</a>] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance <span class="citation" data-cites="topalcengiz_thermal_2017">(<a href="#ref-topalcengiz_thermal_2017" role="doc-biblioref">Topalcengiz and Danyluk 2017</a>)</span>. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).</p>
+<p>Since 1974, fruit juices have been implicated in more than 48 reported foodborne disease outbreaks, involving more than 5905 cases in various countries <span class="citation" data-cites="martinez-gonzales_safety_2016">(<a href="#ref-martinez-gonzales_safety_2016" role="doc-biblioref">Martínez-Gonzáles and Castillo 2016</a>)</span>. Outbreaks of Shiga-toxin-producing <em>E. coli</em> (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (<span class="citation" data-cites="topalcengiz_thermal_2017">Topalcengiz and Danyluk (<a href="#ref-topalcengiz_thermal_2017" role="doc-biblioref">2017</a>)</span>). According to the FDA, <em>E. coli</em> and <em>Cryptosporidium parvum</em> are both pertinent microorganisms Although in most cases the growth of STEC will not occur, the microbial population will remain stable or slowly decline (depending on the fruit juice) for 3 to 84 days<span class="citation" data-cites="erickson_food_2007">(<a href="#ref-erickson_food_2007" role="doc-biblioref">Erickson and Doyle 2007</a>)</span>, the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) [<a href="spit%20the%20references%20here%20and%20add%20more%20text">@kernou_inactivation_2023; @mutaku_growth_2005; @skandamis_modeling_2007; @topalcengiz_thermal_2017; @foster_acid_2001</a>] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance <span class="citation" data-cites="topalcengiz_thermal_2017">(<a href="#ref-topalcengiz_thermal_2017" role="doc-biblioref">Topalcengiz and Danyluk 2017</a>)</span>. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).</p>
 <ul>
 <li><p>According to the FDA, The 5-log pathogen reduction must</p>
 <ul>
@@ -3253,7 +3253,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <p><span id="eq-secondary-pressure"><span class="math display">\[
 \ LogD = 1.434 -0.000329 \cdot P
 \tag{3}\]</span></span></p>
-<p>This model is the same with the one showed above in <a href="#eq-secondary" class="quarto-xref">Equation 2</a> but with using pressure instead of temperature. The <em>z<sub>p</sub></em> can be estimated as the negative inverse of the slope i.e., 304 MPa. For the Pref we will use 400 Mpa. The treatment pressure <em>P</em> is described by a normal distribution with mean 550 MPa and standard deviation 20 MPa (variability i.e., level = 0). Dref (at the Pref) was estimated as 1.3 minutes from the <a href="#eq-secondary-pressure" class="quarto-xref">Equation 3</a> but we assume that is described by a uniform distribution with a minimum of 1 minute and maximum of 4 minutes (variability i.e., level = 0). The treatment time in this case is assumed to be 5 minutes.</p>
+<p>This model is the same with the one showed above in <a href="#eq-secondary" class="quarto-xref">Equation 2</a> but with using pressure instead of temperature. The <em>z<sub>p</sub></em> can be estimated as the negative inverse of the slope i.e., 304 MPa. For the Pref we will use 400 MPa. The treatment pressure <em>P</em> is described by a normal distribution with mean 550 MPa and standard deviation 20 MPa (variability i.e., level = 0) (550 MPa for 1 minute is a relevant combination according to Hiperbaric insights). Dref (at the Pref) was estimated as 1.3 minutes from the <a href="#eq-secondary-pressure" class="quarto-xref">Equation 3</a> but we assume that is described by a uniform distribution with a minimum of 1 minute and maximum of 4 minutes (variability i.e., level = 0). The treatment time in this case is assumed to be 5 minutes.</p>
 <p>Let’s implement those changes:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The equivalent without variability</span></span>
@@ -3265,9 +3265,9 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># map_input(&quot;max&quot;, Constant$new(&quot;Dref_hpp_max&quot;, 4))</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>sec_model_hpp <span class="ot">&lt;-</span> Dz_model<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_hpp&quot;</span>)<span class="sc">$</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;Dref&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Dref_hpp&quot;</span>, <span class="fl">1.3</span>))<span class="sc">$</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;Dref&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Dref_hpp&quot;</span>, <span class="fl">1.13</span>))<span class="sc">$</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;temperature&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;pressure_mu&quot;</span>, <span class="dv">550</span>))<span class="sc">$</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;z&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;z_hpp&quot;</span>, <span class="dv">304</span>))<span class="sc">$</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;z&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;z_hpp&quot;</span>, <span class="fl">269.7</span>))<span class="sc">$</span></span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;Tref&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Pref&quot;</span>, <span class="dv">400</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
@@ -3291,7 +3291,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>inactivation_pef <span class="ot">&lt;-</span> LogLinInactivation<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Treatment_pef&quot;</span>)<span class="sc">$</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;logN0&quot;</span>, logN0)<span class="sc">$</span> <span class="co">#We map logN0 to the initial count defined before</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;D&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_pef&quot;</span>, <span class="fl">50.4</span>))<span class="sc">$</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;D&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_pef&quot;</span>, <span class="fl">40.38</span>))<span class="sc">$</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;t&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;energy_mu&quot;</span>, <span class="dv">120</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -3408,11 +3408,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>inactivation_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -2.39595</code></pre>
+<pre><code>[1] -3.184895</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>inactivation_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -2.380952</code></pre>
+<pre><code>[1] -2.971768</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3420,11 +3420,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8036747</code></pre>
+<pre><code>[1] 0.1306578</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.8319124</code></pre>
+<pre><code>[1] 0.2134331</code></pre>
 </div>
 </div>
 </section>
@@ -3477,11 +3477,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.004090352</code></pre>
+<pre><code>[1] 0.0006661327</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.004233766</code></pre>
+<pre><code>[1] 0.001087917</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3489,11 +3489,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.007446312</code></pre>
+<pre><code>[1] 0.001214379</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.007706934</code></pre>
+<pre><code>[1] 0.001982959</code></pre>
 </div>
 </div>
 <p>Then, we can estimate the number of cases. For that, <strong>biorisk</strong> includes the <strong>Pill2Cases_N</strong> element to convert from probability of illness to number of cases, assuming that the number of cases can be described by a binomial distribution as shown below:</p>
@@ -3515,11 +3515,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_hpp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 219031039</code></pre>
+<pre><code>[1] 35685973</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_pef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 226706366</code></pre>
+<pre><code>[1] 58278558</code></pre>
 </div>
 </div>
 <p>This element considers for each Monte Carlo iteration that the <strong>nservings</strong> have the same probability of illness. On the other hand, the element <strong>Pill2Cases_1</strong> considers a single serving per Pill. In this case, we will make the calculations per <span class="math inline">\(10^{12}\)</span> servings.</p>
@@ -3560,11 +3560,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 150524968</code></pre>
+<pre><code>[1] 24513683</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef__adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 155802576</code></pre>
+<pre><code>[1] 40035333</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3572,11 +3572,11 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 68506072</code></pre>
+<pre><code>[1] 11172290</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 70903790</code></pre>
+<pre><code>[1] 18243225</code></pre>
 </div>
 </div>
 </section>
