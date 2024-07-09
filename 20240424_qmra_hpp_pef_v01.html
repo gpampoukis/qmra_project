@@ -3194,7 +3194,11 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The equivalent scenario without variability</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>logN0 <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0&quot;</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>logN0 <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0&quot;</span>, <span class="dv">0</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>intercept_pef <span class="ot">&lt;-</span> <span class="fl">0.72907</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>logN0_pef <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0_pef&quot;</span>, <span class="dv">0</span> <span class="sc">-</span> intercept_pef) <span class="co"># based on the intercept of our initial equation of reductions and energy input</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="inactivation-using-thermal-processing" class="level2" data-number="4.4">
@@ -3286,13 +3290,17 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 \log_{10}N = \log_{10}N_0 - \frac{E_i}{D_{E_i}}
 \tag{4}\]</span></span></p>
 <p>Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and <em>E. coli</em>. The <em>D</em> was estimated as 50.4 kJ/L and thus we used a uniform distribution for that with a minimum of 60 kJ/L and a maximum of 80 kJ/L. According to <span class="citation" data-cites="aganovic_environmental_2022">Aganovic and Smetana (<a href="#ref-aganovic_environmental_2022" role="doc-biblioref">2022</a>)</span>, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 <span class="math inline">\(kg/L\)</span>). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.</p>
+<p>nactivation_pef &lt;- LogLinInactivation$new(“Treatment_pef”)$</p>
+<p>map_input(“logN0”, logN0)$ #We map logN0 to the initial count defined before</p>
+<p>map_input(“D”, inactivation_model_pef)$</p>
+<p>map_input(“t”, energy_pef)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The equivalent without variability</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>energy_pef <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;energy_pef&quot;</span>, <span class="dv">120</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>inactivation_pef <span class="ot">&lt;-</span> LogLinInactivation<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Treatment_pef&quot;</span>)<span class="sc">$</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;logN0&quot;</span>, logN0)<span class="sc">$</span> <span class="co">#We map logN0 to the initial count defined before</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;D&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_pef&quot;</span>, <span class="fl">40.38</span>))<span class="sc">$</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;t&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;energy_mu&quot;</span>, <span class="dv">120</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;logN0&quot;</span>, logN0_pef)<span class="sc">$</span> <span class="co">#We map logN0 to the logN0 with the intercept</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;D&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;D_pef&quot;</span>, <span class="fl">40.37832</span>))<span class="sc">$</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;t&quot;</span>, energy_pef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="summary-of-all-inactivation-models" class="level2" data-number="4.7">
@@ -3412,7 +3420,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>inactivation_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -2.971768</code></pre>
+<pre><code>[1] -3.700962</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3424,7 +3432,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2134331</code></pre>
+<pre><code>[1] 0.03981696</code></pre>
 </div>
 </div>
 </section>
@@ -3481,7 +3489,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.001087917</code></pre>
+<pre><code>[1] 0.0002030459</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3493,7 +3501,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.001982959</code></pre>
+<pre><code>[1] 0.0003702292</code></pre>
 </div>
 </div>
 <p>Then, we can estimate the number of cases. For that, <strong>biorisk</strong> includes the <strong>Pill2Cases_N</strong> element to convert from probability of illness to number of cases, assuming that the number of cases can be described by a binomial distribution as shown below:</p>
@@ -3519,7 +3527,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_pef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 58278558</code></pre>
+<pre><code>[1] 10878198</code></pre>
 </div>
 </div>
 <p>This element considers for each Monte Carlo iteration that the <strong>nservings</strong> have the same probability of illness. On the other hand, the element <strong>Pill2Cases_1</strong> considers a single serving per Pill. In this case, we will make the calculations per <span class="math inline">\(10^{12}\)</span> servings.</p>
@@ -3549,7 +3557,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate and print the number of cases for each Pill object</span></span>
 <span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>cases_tp_adults_value <span class="ot">&lt;-</span> cases_tp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
 <span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>cases_hpp_adults_value <span class="ot">&lt;-</span> cases_hpp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>cases_pef__adults_value <span class="ot">&lt;-</span> cases_pef_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>cases_pef_adults_value <span class="ot">&lt;-</span> cases_pef_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
 <span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>cases_tp_children_value <span class="ot">&lt;-</span> cases_tp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
 <span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>cases_hpp_children_value <span class="ot">&lt;-</span> cases_hpp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
 <span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>cases_pef_children_value <span class="ot">&lt;-</span> cases_pef_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
@@ -3562,9 +3570,9 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 24513683</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef__adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 40035333</code></pre>
+<pre><code>[1] 7472089</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3576,7 +3584,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 </div>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 18243225</code></pre>
+<pre><code>[1] 3406109</code></pre>
 </div>
 </div>
 </section>
