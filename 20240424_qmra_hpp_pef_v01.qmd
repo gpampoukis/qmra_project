@@ -400,6 +400,22 @@ $$
 As above, we first need to define the secondary model. The Ratkowsky model has three inputs: treatment temperature, *T*~min~, and *b*. For the temperature, we assign a normal distribution that represents uncertainty (level = 1) with expected value (mean) of 6.35 ºC (we define the metric units) and a standard deviation of 2.83 ºC (we define the metric units) .
 
 ```{r}
+# This is based on Duffy and Schaffner 2001
+# They are probability distributions to simulate the change of STEC in ciders during storage where there is an overall decline although a small fraction of the time a slight increase might be seen
+
+
+
+# For ideal refrigeration
+
+ideal_storgage <- Logistic
+
+# For temperature abuse
+
+
+```
+
+
+```{r}
 #| eval: false
 #| echo: false
 temp_distrib <- Normal$new("temp_distrib",
