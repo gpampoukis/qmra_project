@@ -27,6 +27,8 @@ The scope of this QMRA is to include and assess the effects of the step of the j
 
 # Background
 
+EFSA mentioned in Table 4 of @hazards_guidance_2020 e.g. Fruit juices HTST processed at 71.5°C for 15–30 s to reducing 5 Log10 reduction of E. coli O157:H7 and L. monocytogenes (Duan et al., 2011)
+
 Since 1974, fruit juices have been implicated in more than 48 reported foodborne disease outbreaks, involving more than 5905 cases in various countries [@martinez-gonzales_safety_2016]. Outbreaks of Shiga-toxin-producing *E. coli* (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (@topalcengiz_thermal_2017). According to the FDA, *E. coli* and *Cryptosporidium parvum* are both pertinent microorganisms Although in most cases the growth of STEC will not occur, the microbial population will remain stable or slowly decline (depending on the fruit juice) for 3 to 84 days[@erickson_food_2007], the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) \[[\@kernou_inactivation_2023; \@mutaku_growth_2005; \@skandamis_modeling_2007; \@topalcengiz_thermal_2017; \@foster_acid_2001](spit%20the%20references%20here%20and%20add%20more%20text)\] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance [@topalcengiz_thermal_2017]. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).
 
 -   According to the FDA, The 5-log pathogen reduction must
@@ -399,21 +401,69 @@ $$
 
 As above, we first need to define the secondary model. The Ratkowsky model has three inputs: treatment temperature, *T*~min~, and *b*. For the temperature, we assign a normal distribution that represents uncertainty (level = 1) with expected value (mean) of 6.35 ºC (we define the metric units) and a standard deviation of 2.83 ºC (we define the metric units) .
 
+The typical shelf life of refrigerated juices range between 28 and 45 days @esteve_refrigerated_2007, so we assumed a uniform distribution with these minimum and maximum values. But the data of Schaffner were with values only below 30 days, they removed the above this limit.
+
 ```{r}
+#| eval: true
+#| echo: true
 # This is based on Duffy and Schaffner 2001
 # They are probability distributions to simulate the change of STEC in ciders during storage where there is an overall decline although a small fraction of the time a slight increase might be seen
 
+# For ideal refrigeration (4 to 5 ºC)
 
+ideal_storage <- LogisticDistr$new("ideal_storage", level = 0)$
+  map_input("location", Constant$new("location_ideal_storage", -0.061))$
+  map_input("scale", Constant$new("scale_ideal_storage", 0.13))
 
-# For ideal refrigeration
+# For temperature abuse (6 to 10 ºC)
 
-ideal_storgage <- Logistic
+abuse_storage <- LogisticDistr$new("abuse_storage", level = 0)$
+  map_input("location", Constant$new("location_abuse_storage", -0.0982))$
+  map_input("scale", Constant$new("scale_abuse_storage", 0.23))
 
-# For temperature abuse
+# Let's define the storage time
 
+stor_time <- Uniform$new("Storage time")$
+  map_input("min", Constant$new("t_min", 28))$
+  map_input("max", Constant$new("t_max", 45))
+
+# Let's multiply these two to have the combined effect over time
+# Use ElementTimes to multiply these distributions to get the combined effect
+change_storage_ideal <- ElementTimes$new("change_storage_ideal")$
+  map_input("a", ideal_storage)$
+  map_input("b", stor_time)
+
+change_storage_abuse <- ElementTimes$new("change_storage_abuse")$
+  map_input("a", abuse_storage)$
+  map_input("b", stor_time)
+
+# And let's add this to our previous logN values after the inactivation steps
+
+tp_ideal_storage <- ElementPlus$new("after_tp_storage")$
+  map_input("a", inactivation_tp)$
+  map_input("b", change_storage_ideal)
+
+hpp_ideal_storage <- ElementPlus$new("after_hpp_storage")$
+  map_input("a", inactivation_hpp)$
+  map_input("b", change_storage_ideal)
+
+pef_ideal_storage <- ElementPlus$new("after_pef_storage")$
+  map_input("a", inactivation_pef)$
+  map_input("b", change_storage_ideal)
+
+tp_abuse_storage <- ElementPlus$new("after_tp_storage")$
+  map_input("a", inactivation_tp)$
+  map_input("b", change_storage_abuse)
+
+hpp_abuse_storage <- ElementPlus$new("after_hpp_storage")$
+  map_input("a", inactivation_hpp)$
+  map_input("b", change_storage_abuse)
+
+pef_abuse_storage <- ElementPlus$new("after_pef_storage")$
+  map_input("a", inactivation_pef)$
+  map_input("b", change_storage_abuse)
 
 ```
-
 
 ```{r}
 #| eval: false
@@ -556,6 +606,8 @@ serving_size <- Constant$new("serving_size", 200)  # Map the input to a constant
 ```
 
 ```{r}
+#| eval: false
+#| echo: false
 # Define a function to create a Concentration2Dose object with mapped inputs
 # This function takes two arguments: 'name' and 'logN_input'
 # @param name The name of the Concentration2Dose object
@@ -578,6 +630,86 @@ consumer_dose_hpp <- create_consumer_dose("consumer_dose_hpp", inactivation_hpp)
 
 # Create 'consumer_dose_pef' by calling the function with 'dose' name and 'growth_distrib_pef' for logN
 consumer_dose_pef <- create_consumer_dose("consumer_dose_pef", inactivation_pef)
+
+inactivation_tp$point_estimate()
+inactivation_hpp$point_estimate()
+inactivation_pef$point_estimate()
+consumer_dose_tp$point_estimate()
+consumer_dose_hpp$point_estimate()
+consumer_dose_pef$point_estimate()
+
+```
+
+```{r}
+#| eval: true
+#| echo: true
+# Here is the equivalent if we simulate the change during distribution (ideal)
+
+# Define a function to create a Concentration2Dose object with mapped inputs
+# This function takes two arguments: 'name' and 'logN_input'
+# @param name The name of the Concentration2Dose object
+# @param logN_input The input object to map to the 'logN' parameter
+# @return A Concentration2Dose object with the specified mappings
+
+create_consumer_dose <- function(name, logN_input) {
+  Concentration2Dose$new(name)$  # Create a new Concentration2Dose object with the given name
+    map_input("logN", logN_input)$  # Map the 'logN' input to the provided 'logN_input' argument
+    map_input("size", serving_size)  # Map the 'size' input to the 'serving_size' object
+}
+
+# Use the function to create three different consumer dose objects
+
+# Create 'consumer_dose_tp' by calling the function with 'dose' name and 'growth_distrib_tp' for logN
+consumer_dose_tp <- create_consumer_dose("consumer_dose_tp", tp_ideal_storage)
+
+# Create 'consumer_dose_hpp' by calling the function with 'dose' name and 'growth_distrib_hpp' for logN
+consumer_dose_hpp <- create_consumer_dose("consumer_dose_hpp", hpp_ideal_storage)
+
+# Create 'consumer_dose_pef' by calling the function with 'dose' name and 'growth_distrib_pef' for logN
+consumer_dose_pef <- create_consumer_dose("consumer_dose_pef", pef_ideal_storage)
+
+inactivation_tp$point_estimate()
+inactivation_hpp$point_estimate()
+inactivation_pef$point_estimate()
+ideal_storage$point_estimate()
+stor_time$point_estimate()
+change_storage_ideal$point_estimate()
+tp_ideal_storage$point_estimate()
+hpp_ideal_storage$point_estimate()
+pef_ideal_storage$point_estimate()
+consumer_dose_tp$point_estimate()
+consumer_dose_hpp$point_estimate()
+consumer_dose_pef$point_estimate()
+
+```
+
+```{r}
+#| eval: false
+#| echo: false
+# Here is the equivalent if we simulate the change during distribution (abuse)
+
+# Define a function to create a Concentration2Dose object with mapped inputs
+# This function takes two arguments: 'name' and 'logN_input'
+# @param name The name of the Concentration2Dose object
+# @param logN_input The input object to map to the 'logN' parameter
+# @return A Concentration2Dose object with the specified mappings
+
+create_consumer_dose <- function(name, logN_input) {
+  Concentration2Dose$new(name)$  # Create a new Concentration2Dose object with the given name
+    map_input("logN", logN_input)$  # Map the 'logN' input to the provided 'logN_input' argument
+    map_input("size", serving_size)  # Map the 'size' input to the 'serving_size' object
+}
+
+# Use the function to create three different consumer dose objects
+
+# Create 'consumer_dose_tp' by calling the function with 'dose' name and 'growth_distrib_tp' for logN
+consumer_dose_tp <- create_consumer_dose("consumer_dose_tp", tp_abuse_storage)
+
+# Create 'consumer_dose_hpp' by calling the function with 'dose' name and 'growth_distrib_hpp' for logN
+consumer_dose_hpp <- create_consumer_dose("consumer_dose_hpp", hpp_abuse_storage)
+
+# Create 'consumer_dose_pef' by calling the function with 'dose' name and 'growth_distrib_pef' for logN
+consumer_dose_pef <- create_consumer_dose("consumer_dose_pef", pef_abuse_storage)
 
 inactivation_tp$point_estimate()
 inactivation_hpp$point_estimate()
