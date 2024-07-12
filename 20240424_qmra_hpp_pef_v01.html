@@ -3159,13 +3159,14 @@ window.Quarto = {
 </section>
 <section id="scope-of-qmra" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Scope of QMRA</h1>
-<p>The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., “the juice is pumped to a holding tank”) until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles, no contamination there according to the HACCP examples from FDA) iii., consumer phase.</p>
+<p>The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., “the juice is pumped to a holding tank”) until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles, no contamination there according to the HACCP examples from FDA); iii., change during storage iv., consumer phase.</p>
 </section>
 <section id="a-case-study-for-juice-treatment-with-hpp---model-definition" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> A case study for juice treatment with HPP - Model definition</h1>
 </section>
 <section id="background" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Background</h1>
+<p>EFSA mentioned in Table 4 of <span class="citation" data-cites="efsa_panelon_biological_hazards_biohaz_guidance_2020">EFSA Panel on Biological Hazards (BIOHAZ) et al. (<a href="#ref-efsa_panelon_biological_hazards_biohaz_guidance_2020" role="doc-biblioref">2020</a>)</span> e.g. Fruit juices HTST processed at 71.5°C for 15–30 s to reducing 5 Log10 reduction of E. coli O157:H7 and L. monocytogenes (Duan et al., 2011)</p>
 <p>Since 1974, fruit juices have been implicated in more than 48 reported foodborne disease outbreaks, involving more than 5905 cases in various countries <span class="citation" data-cites="martinez-gonzales_safety_2016">(<a href="#ref-martinez-gonzales_safety_2016" role="doc-biblioref">Martínez-Gonzáles and Castillo 2016</a>)</span>. Outbreaks of Shiga-toxin-producing <em>E. coli</em> (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (<span class="citation" data-cites="topalcengiz_thermal_2017">Topalcengiz and Danyluk (<a href="#ref-topalcengiz_thermal_2017" role="doc-biblioref">2017</a>)</span>). According to the FDA, <em>E. coli</em> and <em>Cryptosporidium parvum</em> are both pertinent microorganisms Although in most cases the growth of STEC will not occur, the microbial population will remain stable or slowly decline (depending on the fruit juice) for 3 to 84 days<span class="citation" data-cites="erickson_food_2007">(<a href="#ref-erickson_food_2007" role="doc-biblioref">Erickson and Doyle 2007</a>)</span>, the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) [<a href="spit%20the%20references%20here%20and%20add%20more%20text">@kernou_inactivation_2023; @mutaku_growth_2005; @skandamis_modeling_2007; @topalcengiz_thermal_2017; @foster_acid_2001</a>] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance <span class="citation" data-cites="topalcengiz_thermal_2017">(<a href="#ref-topalcengiz_thermal_2017" role="doc-biblioref">Topalcengiz and Danyluk 2017</a>)</span>. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).</p>
 <ul>
 <li><p>According to the FDA, The 5-log pathogen reduction must</p>
@@ -3194,11 +3195,20 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The equivalent scenario without variability</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>logN0 <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0&quot;</span>, <span class="dv">0</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>intercept_pef <span class="ot">&lt;-</span> <span class="fl">0.72907</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>logN0_pef <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0_pef&quot;</span>, <span class="dv">0</span> <span class="sc">-</span> intercept_pef) <span class="co"># based on the intercept of our initial equation of reductions and energy input</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the initial logN0 constant</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>logN0 <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the value from logN0 to perform arithmetic</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>logN0_value <span class="ot">&lt;-</span> logN0<span class="sc">$</span>value</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the intercept constant</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>intercept_pef <span class="ot">&lt;-</span> <span class="fl">0.72907</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the adjusted logN0_pef value</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>logN0_pef_value <span class="ot">&lt;-</span> logN0_value <span class="sc">-</span> intercept_pef</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the new Constant object for logN0_pef</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>logN0_pef <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;logN0_pef&quot;</span>, logN0_pef_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="inactivation-using-thermal-processing" class="level2" data-number="4.4">
@@ -3353,6 +3363,7 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 \sqrt{\mu} = b \cdot (T - T_{\text{min}}) \quad (\sqrt{\frac{\log}{h}})
 \]</span></p>
 <p>As above, we first need to define the secondary model. The Ratkowsky model has three inputs: treatment temperature, <em>T</em><sub>min</sub>, and <em>b</em>. For the temperature, we assign a normal distribution that represents uncertainty (level = 1) with expected value (mean) of 6.35 ºC (we define the metric units) and a standard deviation of 2.83 ºC (we define the metric units) .</p>
+<p>The typical shelf life of refrigerated juices range between 28 and 45 days <span class="citation" data-cites="esteve_refrigerated_2007">Esteve and Frígola (<a href="#ref-esteve_refrigerated_2007" role="doc-biblioref">2007</a>)</span>, so we assumed a uniform distribution with these minimum and maximum values. But the data of Schaffner were with values only below 30 days, they removed the above this limit.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is based on Duffy and Schaffner 2001</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># They are probability distributions to simulate the change of STEC in ciders during storage where there is an overall decline although a small fraction of the time a slight increase might be seen</span></span>
@@ -3371,43 +3382,47 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s define the storage time</span></span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>stor_time <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;storage_time&quot;</span>, <span class="dv">35</span>)</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s multiply these two to have the combined effect over time</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ElementTimes to multiply these distributions to get the combined effect</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>change_storage_ideal <span class="ot">&lt;-</span> ElementTimes<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;change_storage_ideal&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, ideal_storage)<span class="sc">$</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, stor_time)</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>change_storage_abuse <span class="ot">&lt;-</span> ElementTimes<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;change_storage_abuse&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, abuse_storage)<span class="sc">$</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#stor_time &lt;- Uniform$new(&quot;Storage time&quot;)$</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#map_input(&quot;min&quot;, Constant$new(&quot;t_min&quot;, 28))$</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">#map_input(&quot;max&quot;, Constant$new(&quot;t_max&quot;, 45))</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>stor_time <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Storage time&quot;</span>, <span class="fl">36.5</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s multiply these two to have the combined effect over time</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ElementTimes to multiply these distributions to get the combined effect</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>change_storage_ideal <span class="ot">&lt;-</span> ElementTimes<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;change_storage_ideal&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, ideal_storage)<span class="sc">$</span></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, stor_time)</span>
 <span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># And let&#39;s add this to our previous logN values after the inactivation steps</span></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>tp_ideal_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_tp_storage&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_tp)<span class="sc">$</span></span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_ideal)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>change_storage_abuse <span class="ot">&lt;-</span> ElementTimes<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;change_storage_abuse&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, abuse_storage)<span class="sc">$</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, stor_time)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co"># And let&#39;s add this to our previous logN values after the inactivation steps</span></span>
 <span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>hpp_ideal_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_hpp_storage&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_hpp)<span class="sc">$</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>tp_ideal_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_tp_storage&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_tp)<span class="sc">$</span></span>
 <span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_ideal)</span>
 <span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>pef_ideal_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_pef_storage&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_pef)<span class="sc">$</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>hpp_ideal_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_hpp_storage&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_hpp)<span class="sc">$</span></span>
 <span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_ideal)</span>
 <span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>tp_abuse_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_tp_storage&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_tp)<span class="sc">$</span></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_abuse)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>pef_ideal_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_pef_storage&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_pef)<span class="sc">$</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_ideal)</span>
 <span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>hpp_abuse_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_hpp_storage&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_hpp)<span class="sc">$</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>tp_abuse_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_tp_storage&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_tp)<span class="sc">$</span></span>
 <span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_abuse)</span>
 <span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>pef_abuse_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_pef_storage&quot;</span>)<span class="sc">$</span></span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_pef)<span class="sc">$</span></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_abuse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>hpp_abuse_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_hpp_storage&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_hpp)<span class="sc">$</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_abuse)</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>pef_abuse_storage <span class="ot">&lt;-</span> ElementPlus<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;after_pef_storage&quot;</span>)<span class="sc">$</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;a&quot;</span>, inactivation_pef)<span class="sc">$</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_input</span>(<span class="st">&quot;b&quot;</span>, change_storage_abuse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then, we define the Ratkowsky model, mapping the temperature to the element we just defined. In this case, we assume no variability or uncertainty in the model parameters, and the <em>b</em> is assumed to be 0.014 and <em>T<sub>min</sub></em> to be 1.6.</p>
 <p>The scheme of the secondary growth model as we defined it:</p>
@@ -3470,51 +3485,71 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>inactivation_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -9.296555</code></pre>
+<pre><code>[1] -8.296555</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>inactivation_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -3.184895</code></pre>
+<pre><code>[1] -2.184895</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>inactivation_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -3.700962</code></pre>
+<pre><code>[1] -2.700962</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -0.061</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>stor_time<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>abuse_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 35</code></pre>
+<pre><code>[1] -0.0982</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>change_storage_ideal<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>stor_time<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -2.135</code></pre>
+<pre><code>[1] 36.5</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>tp_ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>change_storage_ideal<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -11.43155</code></pre>
+<pre><code>[1] -2.2265</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>hpp_ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>change_storage_abuse<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -5.319895</code></pre>
+<pre><code>[1] -3.5843</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pef_ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tp_ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -5.835962</code></pre>
+<pre><code>[1] -10.52305</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>hpp_ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 7.404152e-10</code></pre>
+<pre><code>[1] -4.411395</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pef_ideal_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.0009574922</code></pre>
+<pre><code>[1] -4.927462</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tp_abuse_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.0002917885</code></pre>
+<pre><code>[1] -11.88085</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>hpp_abuse_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -5.769195</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pef_abuse_storage<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -6.285262</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_tp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.99757e-09</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_hpp<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.007755955</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>consumer_dose_pef<span class="sc">$</span><span class="fu">point_estimate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.002363568</code></pre>
 </div>
 </div>
 </section>
@@ -3529,144 +3564,144 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 <p>for adults, respectively</p>
 <p>where the dose is the output of the <a href="#sec-consumer_phase" class="quarto-xref">Section 6.1</a> section</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to create a DoseResponse_Exponential object with mapped inputs</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This function takes two arguments: &#39;name&#39; and &#39;dose_input&#39;</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># @param name The name of the DoseResponse_Exponential object</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># @param dose_input The input object to map to the &#39;dose&#39; parameter</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># @return A DoseResponse_Exponential object with the specified mappings</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>create_pill <span class="ot">&lt;-</span> <span class="cf">function</span>(name, dose_input, r_value) {</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  DoseResponse_Exponential<span class="sc">$</span><span class="fu">new</span>(name)<span class="sc">$</span>  <span class="co"># Create a new DoseResponse_Exponential object with the given name</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;r&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;r_dr&quot;</span>, r_value))<span class="sc">$</span>  <span class="co"># Map the &#39;r&#39; input to the given r value</span></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;dose&quot;</span>, dose_input)  <span class="co"># Map the &#39;dose&#39; input to the provided &#39;dose_input&#39; argument</span></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the Pill objects for children and adults separately</span></span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>Pill_tp_adults <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_tp_adults&quot;</span>, consumer_dose_tp, <span class="fl">5.1e-3</span>)</span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>Pill_hpp_adults <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_hpp_adults&quot;</span>, consumer_dose_hpp, <span class="fl">5.1e-3</span>)</span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>Pill_pef_adults <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_pef_adults&quot;</span>, consumer_dose_pef, <span class="fl">5.1e-3</span>)</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>Pill_pef_children <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_pef_children&quot;</span>, consumer_dose_pef, <span class="fl">9.3e-3</span>)</span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>Pill_tp_children <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_tp_children&quot;</span>, consumer_dose_tp, <span class="fl">9.3e-3</span>)</span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>Pill_hpp_children <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_hpp_children&quot;</span>, consumer_dose_hpp, <span class="fl">9.3e-3</span>)</span>
-<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the median values for each dose response object for both children and adults</span></span>
-<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>pill_median_tp_adults <span class="ot">&lt;-</span> Pill_tp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>pill_median_hpp_adults <span class="ot">&lt;-</span> Pill_hpp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>pill_median_pef_adults <span class="ot">&lt;-</span> Pill_pef_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>pill_median_tp_children <span class="ot">&lt;-</span> Pill_tp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>pill_median_hpp_children <span class="ot">&lt;-</span> Pill_hpp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a>pill_median_pef_children <span class="ot">&lt;-</span> Pill_pef_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to create a DoseResponse_Exponential object with mapped inputs</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This function takes two arguments: &#39;name&#39; and &#39;dose_input&#39;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># @param name The name of the DoseResponse_Exponential object</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># @param dose_input The input object to map to the &#39;dose&#39; parameter</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># @return A DoseResponse_Exponential object with the specified mappings</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>create_pill <span class="ot">&lt;-</span> <span class="cf">function</span>(name, dose_input, r_value) {</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  DoseResponse_Exponential<span class="sc">$</span><span class="fu">new</span>(name)<span class="sc">$</span>  <span class="co"># Create a new DoseResponse_Exponential object with the given name</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;r&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;r_dr&quot;</span>, r_value))<span class="sc">$</span>  <span class="co"># Map the &#39;r&#39; input to the given r value</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;dose&quot;</span>, dose_input)  <span class="co"># Map the &#39;dose&#39; input to the provided &#39;dose_input&#39; argument</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the Pill objects for children and adults separately</span></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>Pill_tp_adults <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_tp_adults&quot;</span>, consumer_dose_tp, <span class="fl">5.1e-3</span>)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>Pill_hpp_adults <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_hpp_adults&quot;</span>, consumer_dose_hpp, <span class="fl">5.1e-3</span>)</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>Pill_pef_adults <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_pef_adults&quot;</span>, consumer_dose_pef, <span class="fl">5.1e-3</span>)</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>Pill_pef_children <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_pef_children&quot;</span>, consumer_dose_pef, <span class="fl">9.3e-3</span>)</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>Pill_tp_children <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_tp_children&quot;</span>, consumer_dose_tp, <span class="fl">9.3e-3</span>)</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>Pill_hpp_children <span class="ot">&lt;-</span> <span class="fu">create_pill</span>(<span class="st">&quot;Pill_hpp_children&quot;</span>, consumer_dose_hpp, <span class="fl">9.3e-3</span>)</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the median values for each dose response object for both children and adults</span></span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>pill_median_tp_adults <span class="ot">&lt;-</span> Pill_tp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>pill_median_hpp_adults <span class="ot">&lt;-</span> Pill_hpp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>pill_median_pef_adults <span class="ot">&lt;-</span> Pill_pef_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>pill_median_tp_children <span class="ot">&lt;-</span> Pill_tp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>pill_median_hpp_children <span class="ot">&lt;-</span> Pill_hpp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>pill_median_pef_children <span class="ot">&lt;-</span> Pill_pef_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3.776091e-12</code></pre>
+<pre><code>[1] 3.058764e-11</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.883198e-06</code></pre>
+<pre><code>[1] 3.955459e-05</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_adults)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.48812e-06</code></pre>
+<pre><code>[1] 1.205413e-05</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_tp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 6.885825e-12</code></pre>
+<pre><code>[1] 5.577738e-11</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_hpp_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 8.904638e-06</code></pre>
+<pre><code>[1] 7.212778e-05</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pill_median_pef_children)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.713629e-06</code></pre>
+<pre><code>[1] 2.198094e-05</code></pre>
 </div>
 </div>
 <p>Then, we can estimate the number of cases. For that, <strong>biorisk</strong> includes the <strong>Pill2Cases_N</strong> element to convert from probability of illness to number of cases, assuming that the number of cases can be described by a binomial distribution as shown below:</p>
 <p><span class="math display">\[ \text{cases} = \text{Binomial}(n = \text{servings}, p = P_{\text{ill}}) \]</span>According to the European Fruit Juice Association 2019 Liquid Fruit Market Report (https://aijn.h5mag.com/aijn2019report/the_fruit_juice_industry_overall_fruit_juice_consumption), 9.1 billion litres of fruit juice were consumed in 2017. If we convert this number to serving of 200 ml, we would have approximately <span class="math inline">\(4.6*10^{10}\)</span> servings. For our information the mean of the binomial distribution could also estimated using <span class="math inline">\(4.6*10^{10}\)</span> servings multiplied with the median value of the <span class="math inline">\(P_{\text{ill}}\)</span> that was previously defined:</p>
 <p><span class="math display">\[\mu_{\text{mean}} = 4.6 \cdot 10^{12} \cdot P_{\text{ill(median)}}\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>servings_adults <span class="ot">&lt;-</span> <span class="fl">0.8</span><span class="sc">*</span><span class="fl">4.6e10</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>servings_children <span class="ot">&lt;-</span> <span class="fl">0.2</span><span class="sc">*</span><span class="fl">4.6e10</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the mean cases values by multiplying each combined median value by 4.6e10</span></span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>cases_mean_tp <span class="ot">&lt;-</span> (pill_median_tp_children <span class="sc">*</span> servings_children) <span class="sc">+</span> (pill_median_tp_adults <span class="sc">*</span> servings_adults)</span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>cases_mean_hpp <span class="ot">&lt;-</span> (pill_median_hpp_children <span class="sc">*</span> servings_children) <span class="sc">+</span> (pill_median_hpp_adults <span class="sc">*</span> servings_adults)</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>cases_mean_pef <span class="ot">&lt;-</span> (pill_median_pef_children <span class="sc">*</span> servings_children) <span class="sc">+</span> (pill_median_pef_adults <span class="sc">*</span> servings_adults)</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the cases_mean values</span></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_tp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>servings_adults <span class="ot">&lt;-</span> <span class="fl">0.8</span><span class="sc">*</span><span class="fl">4.6e10</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>servings_children <span class="ot">&lt;-</span> <span class="fl">0.2</span><span class="sc">*</span><span class="fl">4.6e10</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the mean cases values by multiplying each combined median value by 4.6e10</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>cases_mean_tp <span class="ot">&lt;-</span> (pill_median_tp_children <span class="sc">*</span> servings_children) <span class="sc">+</span> (pill_median_tp_adults <span class="sc">*</span> servings_adults)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>cases_mean_hpp <span class="ot">&lt;-</span> (pill_median_hpp_children <span class="sc">*</span> servings_children) <span class="sc">+</span> (pill_median_hpp_adults <span class="sc">*</span> servings_adults)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>cases_mean_pef <span class="ot">&lt;-</span> (pill_median_pef_children <span class="sc">*</span> servings_children) <span class="sc">+</span> (pill_median_pef_adults <span class="sc">*</span> servings_adults)</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the cases_mean values</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_tp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2023097</code></pre>
+<pre><code>[1] 1.638777</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_hpp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_hpp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 261624.4</code></pre>
+<pre><code>[1] 2119184</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_pef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_mean_pef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 79728.21</code></pre>
+<pre><code>[1] 645816.5</code></pre>
 </div>
 </div>
 <p>This element considers for each Monte Carlo iteration that the <strong>nservings</strong> have the same probability of illness. On the other hand, the element <strong>Pill2Cases_1</strong> considers a single serving per Pill. In this case, we will make the calculations per <span class="math inline">\(10^{12}\)</span> servings.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to create a Pill2Cases_N object with mapped inputs</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This function takes two arguments: &#39;name&#39; and &#39;pill_input&#39;</span></span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co"># @param name The name of the Pill2Cases_N object</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co"># @param pill_input The input object to map to the &#39;Pill&#39; parameter</span></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co"># @param servings_input The input object to map to the &#39;Pill&#39; parameter</span></span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="co"># @return A Pill2Cases_N object with the specified mappings</span></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>create_cases <span class="ot">&lt;-</span> <span class="cf">function</span>(name, pill_input, servings_input) {</span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  Pill2Cases_N<span class="sc">$</span><span class="fu">new</span>(name)<span class="sc">$</span>  <span class="co"># Create a new Pill2Cases_N object with the given name</span></span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;Pill&quot;</span>, pill_input)<span class="sc">$</span>  <span class="co"># Map the &#39;Pill&#39; input to the provided &#39;pill_input&#39; argument</span></span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;servings&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;n_servings&quot;</span>, servings_input))  <span class="co"># Map the &#39;servings&#39; input to the corresponding value for adults and children</span></span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the cases objects for each combined median value</span></span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>cases_tp_adults <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_tp_adults&quot;</span>, Pill_tp_adults, </span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>servings_adults)</span>
-<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>cases_hpp_adults <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_hpp_adults&quot;</span>, Pill_hpp_adults, servings_adults)</span>
-<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>cases_pef_adults <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_pef_adults&quot;</span>, Pill_pef_adults, servings_adults)</span>
-<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>cases_tp_children <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_tp_children&quot;</span>, Pill_tp_children, servings_children)</span>
-<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>cases_hpp_children <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_hpp_children&quot;</span>, Pill_hpp_children, servings_children)</span>
-<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>cases_pef_children <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_pef_children&quot;</span>, Pill_pef_children, servings_children)</span>
-<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate and print the number of cases for each Pill object</span></span>
-<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>cases_tp_adults_value <span class="ot">&lt;-</span> cases_tp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>cases_hpp_adults_value <span class="ot">&lt;-</span> cases_hpp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>cases_pef_adults_value <span class="ot">&lt;-</span> cases_pef_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>cases_tp_children_value <span class="ot">&lt;-</span> cases_tp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>cases_hpp_children_value <span class="ot">&lt;-</span> cases_hpp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>cases_pef_children_value <span class="ot">&lt;-</span> cases_pef_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
-<span id="cb53-30"><a href="#cb53-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-31"><a href="#cb53-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a function to create a Pill2Cases_N object with mapped inputs</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This function takes two arguments: &#39;name&#39; and &#39;pill_input&#39;</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="co"># @param name The name of the Pill2Cases_N object</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="co"># @param pill_input The input object to map to the &#39;Pill&#39; parameter</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="co"># @param servings_input The input object to map to the &#39;Pill&#39; parameter</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a><span class="co"># @return A Pill2Cases_N object with the specified mappings</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>create_cases <span class="ot">&lt;-</span> <span class="cf">function</span>(name, pill_input, servings_input) {</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  Pill2Cases_N<span class="sc">$</span><span class="fu">new</span>(name)<span class="sc">$</span>  <span class="co"># Create a new Pill2Cases_N object with the given name</span></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;Pill&quot;</span>, pill_input)<span class="sc">$</span>  <span class="co"># Map the &#39;Pill&#39; input to the provided &#39;pill_input&#39; argument</span></span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_input</span>(<span class="st">&quot;servings&quot;</span>, Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;n_servings&quot;</span>, servings_input))  <span class="co"># Map the &#39;servings&#39; input to the corresponding value for adults and children</span></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the cases objects for each combined median value</span></span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>cases_tp_adults <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_tp_adults&quot;</span>, Pill_tp_adults, </span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>servings_adults)</span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>cases_hpp_adults <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_hpp_adults&quot;</span>, Pill_hpp_adults, servings_adults)</span>
+<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a>cases_pef_adults <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_pef_adults&quot;</span>, Pill_pef_adults, servings_adults)</span>
+<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>cases_tp_children <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_tp_children&quot;</span>, Pill_tp_children, servings_children)</span>
+<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a>cases_hpp_children <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_hpp_children&quot;</span>, Pill_hpp_children, servings_children)</span>
+<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a>cases_pef_children <span class="ot">&lt;-</span> <span class="fu">create_cases</span>(<span class="st">&quot;cases_pef_children&quot;</span>, Pill_pef_children, servings_children)</span>
+<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate and print the number of cases for each Pill object</span></span>
+<span id="cb63-24"><a href="#cb63-24" aria-hidden="true" tabindex="-1"></a>cases_tp_adults_value <span class="ot">&lt;-</span> cases_tp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb63-25"><a href="#cb63-25" aria-hidden="true" tabindex="-1"></a>cases_hpp_adults_value <span class="ot">&lt;-</span> cases_hpp_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb63-26"><a href="#cb63-26" aria-hidden="true" tabindex="-1"></a>cases_pef_adults_value <span class="ot">&lt;-</span> cases_pef_adults<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb63-27"><a href="#cb63-27" aria-hidden="true" tabindex="-1"></a>cases_tp_children_value <span class="ot">&lt;-</span> cases_tp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb63-28"><a href="#cb63-28" aria-hidden="true" tabindex="-1"></a>cases_hpp_children_value <span class="ot">&lt;-</span> cases_hpp_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb63-29"><a href="#cb63-29" aria-hidden="true" tabindex="-1"></a>cases_pef_children_value <span class="ot">&lt;-</span> cases_pef_children<span class="sc">$</span><span class="fu">point_estimate</span>()</span>
+<span id="cb63-30"><a href="#cb63-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-31"><a href="#cb63-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1389601</code></pre>
+<pre><code>[1] 1.125625</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 179701.7</code></pre>
+<pre><code>[1] 1455609</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_adults_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 54762.82</code></pre>
+<pre><code>[1] 443591.8</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_tp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06334959</code></pre>
+<pre><code>[1] 0.5131519</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_hpp_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 81922.67</code></pre>
+<pre><code>[1] 663575.5</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cases_pef_children_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 24965.39</code></pre>
+<pre><code>[1] 202224.7</code></pre>
 </div>
 </div>
 </section>
@@ -3756,8 +3791,14 @@ Duffy, Siobain, and Donald W Schaffner. 2002. <span>“Monte <span>Carlo</span> 
 <div id="ref-duffy_modeling_2001" class="csl-entry" role="listitem">
 Duffy, Siobain, and Donald W. Schaffner. 2001. <span>“Modeling the <span>Survival</span> of <span>Escherichia</span> Coli <span>O157</span>:<span>H7</span> in <span>Apple</span> <span>Cider</span> <span>Using</span> <span>Probability</span> <span>Distribution</span> <span>Functions</span> for <span>Quantitative</span> <span>Risk</span> <span>Assessment</span>.”</span> <em>Journal of Food Protection</em> 64 (5): 599–605. https://doi.org/<a href="https://doi.org/10.4315/0362-028X-64.5.599">https://doi.org/10.4315/0362-028X-64.5.599</a>.
 </div>
+<div id="ref-efsa_panelon_biological_hazards_biohaz_guidance_2020" class="csl-entry" role="listitem">
+EFSA Panel on Biological Hazards (BIOHAZ), Konstantinos Koutsoumanis, Ana Allende, Avelino Alvarez-Ordóñez, Declan Bolton, Sara Bover-Cid, Marianne Chemaly, et al. 2020. <span>“Guidance on Date Marking and Related Food Information: Part 1 (Date Marking).”</span> <em>EFSA Journal</em> 18 (12): e06306. <a href="https://doi.org/10.2903/j.efsa.2020.6306">https://doi.org/10.2903/j.efsa.2020.6306</a>.
+</div>
 <div id="ref-erickson_food_2007" class="csl-entry" role="listitem">
 Erickson, Marilyn C., and Michael P. Doyle. 2007. <span>“Food as a <span>Vehicle</span> for <span>Transmission</span> of <span>Shiga</span> <span>Toxin</span>–<span>Producing</span> <em><span>Escherichia</span> Coli</em>.”</span> <em>Journal of Food Protection</em> 70 (10): 2426–49. <a href="https://doi.org/10.4315/0362-028X-70.10.2426">https://doi.org/10.4315/0362-028X-70.10.2426</a>.
+</div>
+<div id="ref-esteve_refrigerated_2007" class="csl-entry" role="listitem">
+Esteve, Maria Jose, and Ana Frígola. 2007. <span>“Refrigerated <span>Fruit</span> <span>Juices</span>: <span>Quality</span> and <span>Safety</span> <span>Issues</span>.”</span> In <em>Advances in <span>Food</span> and <span>Nutrition</span> <span>Research</span></em>, 52:103–39. Academic Press. <a href="https://doi.org/10.1016/S1043-4526(06)52003-0">https://doi.org/10.1016/S1043-4526(06)52003-0</a>.
 </div>
 <div id="ref-european_food_safety_authority_urgent_2011" class="csl-entry" role="listitem">
 European Food Safety Authority. 2011. <span>“Urgent Advice on the Public Health Risk of <span>Shiga</span>-Toxin Producing <span>Escherichia</span> Coli in Fresh Vegetables.”</span> <em>EFSA Journal</em> 9 (6): 2274. <a href="https://doi.org/10.2903/j.efsa.2011.2274">https://doi.org/10.2903/j.efsa.2011.2274</a>.

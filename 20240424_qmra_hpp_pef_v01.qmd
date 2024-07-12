@@ -21,13 +21,13 @@ The purpose of this QMRA is to estimate the impact of replacing conventional pas
 
 # Scope of QMRA
 
-The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., "the juice is pumped to a holding tank") until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles, no contamination there according to the HACCP examples from FDA) iii., consumer phase.
+The scope of this QMRA is to include and assess the effects of the step of the juice production (i.e., "the juice is pumped to a holding tank") until it reaches the consumer (including the consumption of the fruit juice). The steps involved are: i., initial concentration; ii., inactivation using a means of processing; (iii., filling in bottles, no contamination there according to the HACCP examples from FDA); iii., change during storage iv., consumer phase.
 
 # A case study for juice treatment with HPP - Model definition
 
 # Background
 
-EFSA mentioned in Table 4 of @hazards_guidance_2020 e.g. Fruit juices HTST processed at 71.5°C for 15–30 s to reducing 5 Log10 reduction of E. coli O157:H7 and L. monocytogenes (Duan et al., 2011)
+EFSA mentioned in Table 4 of @efsa_panelon_biological_hazards_biohaz_guidance_2020 e.g. Fruit juices HTST processed at 71.5°C for 15--30 s to reducing 5 Log10 reduction of E. coli O157:H7 and L. monocytogenes (Duan et al., 2011)
 
 Since 1974, fruit juices have been implicated in more than 48 reported foodborne disease outbreaks, involving more than 5905 cases in various countries [@martinez-gonzales_safety_2016]. Outbreaks of Shiga-toxin-producing *E. coli* (STEC) have been associated with the consumption of unpasteurized apple cider and apple juice through outbreaks involved in the previous decades (@topalcengiz_thermal_2017). According to the FDA, *E. coli* and *Cryptosporidium parvum* are both pertinent microorganisms Although in most cases the growth of STEC will not occur, the microbial population will remain stable or slowly decline (depending on the fruit juice) for 3 to 84 days[@erickson_food_2007], the resistance to an acidic environment is strain-dependent (some strains can withstand low pH values) \[[\@kernou_inactivation_2023; \@mutaku_growth_2005; \@skandamis_modeling_2007; \@topalcengiz_thermal_2017; \@foster_acid_2001](spit%20the%20references%20here%20and%20add%20more%20text)\] (split the references and add more text) but also dependent if the cells are acid-adapted, which also increases the heat resistance [@topalcengiz_thermal_2017]. For some strains, there is no growth reported for pH below 4.0, while for others there is growth reported above the threshold of pH of 3.5 (this should be in one of the references above).
 
@@ -73,14 +73,28 @@ library(biorisk)
 ```{r}
 #| eval: false
 #| echo: false
-logN0 <- Uniform$new("logN0", # A uniform distribution
-                 level = 0)$
-  map_input("min",
-            Constant$new("logN0_min", 0) # with a constant min. value
-)$
-  map_input ("max",
-             Constant$new("logN0_max", 1) # and a constant max. value
-)
+
+# Define the Uniform distribution for logN0
+logN0 <- Uniform$new("logN0", level = 0)$
+  map_input("min", Constant$new("logN0_min", 0))$
+  map_input("max", Constant$new("logN0_max", 1))
+
+# Extract min and max values from logN0 to perform arithmetic
+logN0_min_value <- logN0$inputs$min$value
+logN0_max_value <- logN0$inputs$max$value
+
+# Define the intercept constant
+intercept_pef <- 0.72907
+
+# Adjust the min and max values of logN0 by subtracting the intercept
+logN0_pef_min_value <- logN0_min_value - intercept_pef
+logN0_pef_max_value <- logN0_max_value - intercept_pef
+
+# Create the new Uniform distribution for logN0_pef
+logN0_pef <- Uniform$new("logN0_pef", level = 0)$
+  map_input("min", Constant$new("logN0_pef_min", logN0_pef_min_value))$
+  map_input("max", Constant$new("logN0_pef_max", logN0_pef_max_value))
+
 
 ```
 
@@ -90,11 +104,20 @@ logN0 <- Uniform$new("logN0", # A uniform distribution
 
 # The equivalent scenario without variability
 
-logN0 <- Constant$new("logN0", 0)
+# Define the initial logN0 constant
+logN0 <- Constant$new("logN0", 1)
 
+# Extract the value from logN0 to perform arithmetic
+logN0_value <- logN0$value
+
+# Define the intercept constant
 intercept_pef <- 0.72907
 
-logN0_pef <- Constant$new("logN0_pef", 0 - intercept_pef) # based on the intercept of our initial equation of reductions and energy input
+# Calculate the adjusted logN0_pef value
+logN0_pef_value <- logN0_value - intercept_pef
+
+# Create the new Constant object for logN0_pef
+logN0_pef <- Constant$new("logN0_pef", logN0_pef_value)
 
 ```
 
@@ -423,9 +446,11 @@ abuse_storage <- LogisticDistr$new("abuse_storage", level = 0)$
 
 # Let's define the storage time
 
-stor_time <- Uniform$new("Storage time")$
-  map_input("min", Constant$new("t_min", 28))$
-  map_input("max", Constant$new("t_max", 45))
+#stor_time <- Uniform$new("Storage time")$
+  #map_input("min", Constant$new("t_min", 28))$
+  #map_input("max", Constant$new("t_max", 45))
+
+stor_time <- Constant$new("Storage time", 36.5)
 
 # Let's multiply these two to have the combined effect over time
 # Use ElementTimes to multiply these distributions to get the combined effect
@@ -672,11 +697,16 @@ inactivation_tp$point_estimate()
 inactivation_hpp$point_estimate()
 inactivation_pef$point_estimate()
 ideal_storage$point_estimate()
+abuse_storage$point_estimate()
 stor_time$point_estimate()
 change_storage_ideal$point_estimate()
+change_storage_abuse$point_estimate()
 tp_ideal_storage$point_estimate()
 hpp_ideal_storage$point_estimate()
 pef_ideal_storage$point_estimate()
+tp_abuse_storage$point_estimate()
+hpp_abuse_storage$point_estimate()
+pef_abuse_storage$point_estimate()
 consumer_dose_tp$point_estimate()
 consumer_dose_hpp$point_estimate()
 consumer_dose_pef$point_estimate()
