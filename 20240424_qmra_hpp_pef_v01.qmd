@@ -79,22 +79,24 @@ logN0 <- Uniform$new("logN0", level = 0)$
   map_input("min", Constant$new("logN0_min", 0))$
   map_input("max", Constant$new("logN0_max", 1))
 
-# Extract min and max values from logN0 to perform arithmetic
-logN0_min_value <- logN0$inputs$min$value
-logN0_max_value <- logN0$inputs$max$value
 
-# Define the intercept constant
-intercept_pef <- 0.72907
+# Define the intercept with some uncertainty based on the standard error of the regression
+intercept_pef <- Normal$new("intercept_pef", level = 1)$
+  map_input("mu", Constant$new("pef_intercept_mu", 0.72907))$
+  map_input("sigma", Constant$new("pef_intercept_sigma", 1.02499))
 
-# Adjust the min and max values of logN0 by subtracting the intercept
-logN0_pef_min_value <- logN0_min_value - intercept_pef
-logN0_pef_max_value <- logN0_max_value - intercept_pef
 
-# Create the new Uniform distribution for logN0_pef
-logN0_pef <- Uniform$new("logN0_pef", level = 0)$
-  map_input("min", Constant$new("logN0_pef_min", logN0_pef_min_value))$
-  map_input("max", Constant$new("logN0_pef_max", logN0_pef_max_value))
 
+# Create the new distribution for logN0_pef
+logN0_pef <- ElementMinus$new("logN0_pef")$
+  map_input("a", logN0)$
+  map_input("b", intercept_pef)
+
+# Check the point estimate
+logN0_pef_estimate <- logN0_pef$point_estimate()
+
+# Print the result
+print(logN0_pef_estimate)
 
 ```
 
@@ -245,12 +247,12 @@ pressure <- Normal$new("pressure", level = 0)$  # Normal pressure level with som
   map_input("mu", Constant$new("pressure_mu", 550))$
   map_input("sigma", Constant$new("pressure_sigma", 20))
 
-# Dref_hpp <- Uniform$new("Dref_hpp", level = 0)$  # Variability in Dref
-  # map_input("min", Constant$new("Dref_hpp_min", 1))$
-  # map_input("max", Constant$new("Dref_hpp_max", 4))
+Dref_hpp <- Normal$new("Dref_hpp", level = 0)$  # variability in Dref
+  map_input("mu", Constant$new("Dref_hpp_mu", 1.1354))$
+  map_input("sigma", Constant$new("Dref_hpp_sigma", 0.42363))
 
 sec_model_hpp <- Dz_model$new("D_hpp")$
-  map_input("Dref", Constant$new("Dref_hpp", 1.13))$
+  map_input("Dref", Dref_hpp)$
   map_input("temperature", pressure)$
   map_input("z", Constant$new("z_hpp", 269.7))$
   map_input("Tref", Constant$new("Pref", 400))
@@ -293,14 +295,6 @@ $$
 $$ {#eq-primary-energy}
 
 Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and *E. coli*. The *D* was estimated as 50.4 kJ/L and thus we used a uniform distribution for that with a minimum of 60 kJ/L and a maximum of 80 kJ/L. According to @aganovic_environmental_2022, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 $kg/L$). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.
-
-nactivation_pef \<- LogLinInactivation\$new("Treatment_pef")\$
-
-map_input("logN0", logN0)\$ #We map logN0 to the initial count defined before
-
-map_input("D", inactivation_model_pef)\$
-
-map_input("t", energy_pef)
 
 ```{r}
 #| eval: false

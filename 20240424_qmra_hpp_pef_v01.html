@@ -3300,10 +3300,6 @@ log_{10}D_{refupper} = log_{10}D_{ref} + t \cdot sigma
 \log_{10}N = \log_{10}N_0 - \frac{E_i}{D_{E_i}}
 \tag{4}\]</span></span></p>
 <p>Here we will not define a secondary model since the effect of the energy input level is already integrated on the inactivation, replacing the time parameter. So, we move directly to the primary model, and we will use the D value, as determined from the log-linear fitting, using the model fitted for fruit juices and <em>E. coli</em>. The <em>D</em> was estimated as 50.4 kJ/L and thus we used a uniform distribution for that with a minimum of 60 kJ/L and a maximum of 80 kJ/L. According to <span class="citation" data-cites="aganovic_environmental_2022">Aganovic and Smetana (<a href="#ref-aganovic_environmental_2022" role="doc-biblioref">2022</a>)</span>, the energy input levels applied for the treatment of heat-sensitive liquids are usually between 80-120 kJ/kg. Thus we selected as applied energy input the 120 kJ/L or for this case (assuming that the density of a fruit juice is approximately 1 <span class="math inline">\(kg/L\)</span>). For this, we assume that the applied energy input can be described by a normal distribution with a mean of 120 kJ/L and a standard deviation of 5 kJ/L.</p>
-<p>nactivation_pef &lt;- LogLinInactivation$new(“Treatment_pef”)$</p>
-<p>map_input(“logN0”, logN0)$ #We map logN0 to the initial count defined before</p>
-<p>map_input(“D”, inactivation_model_pef)$</p>
-<p>map_input(“t”, energy_pef)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>energy_pef <span class="ot">&lt;-</span> Constant<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;energy_pef&quot;</span>, <span class="dv">120</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
