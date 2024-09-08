@@ -1,10 +1,10 @@
 ---
 title: "20240424_qmra_hpp_pef_v01"
 format:
-  html:
-    embed-resources: true
-  #docx:
-    #number-sections: true
+  #html:
+    #embed-resources: true
+  docx:
+    number-sections: true
 number-sections: true
 editor: visual
 execute: 
