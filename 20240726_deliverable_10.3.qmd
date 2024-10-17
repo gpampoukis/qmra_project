@@ -1,0 +1,94 @@
+---
+title: "20240726_deliverable_10.3"
+editor: visual
+format:
+   docx:
+     number-sections: true
+     reference-doc: custom-reference-doc.docx
+
+bibliography: qmra_hpp_pef.bib
+csl: innovative-food-science-and-emerging-technologies.csl
+---
+
+# Background
+
+Non-thermal food processing technologies could enhance food safety, control food quality, maintain nutritional value, and potentially reduce energy use compared to conventional pasteurization methods. Additionally, depending on the application, they can be added as an extra processing step in the food supply chain to reduce the risk of foodborne disease, extend the shelf life of food products, and thereby reduce food waste. For a more accurate estimation of the aforementioned properties, a quantitative approach needs to be implemented. Therefore, the quantitative models that were developed, as explained in deliverable 10.2, were incorporated into a quantitative microbial risk assessment (QMRA) scenario to provide valuable insights for regulatory authorities and industry stakeholders considering the implementation of non-thermal processing methods. In this scenario, apple juice was chosen as a representative for a broad range of similar liquid food products (high-acidic fruit juice with pH ≤ 4.6), and *E. coli* was selected as the microorganism of interest due to its prevalence in the food processing environment as a hygiene indicator and its inclusion of pathogenic serotypes. From 1980 to 2012, pathogenic *E. coli* has been implicated in 16 outbreaks which were associated with the consumption of high-acidic fruit juices or ciders in Canada, the United States, and India [@martinez-gonzales_safety_2016]. The scope of this QMRA is to evaluate the impact of non-thermal processing on the microbial concentration of pathogenic *E. coli* (i.e. STEC) in apple juice as a model case and compare this to conventional thermal processing, and assess the reduction of disease burden and energy usage upon applying the different food processing technologies.
+
+# Materials and methods
+
+## Initial contamination
+
+According to @efsa_urgent_2011, out of 5910 vegetable and fruit samples tested during the years 2004-2009, only 11 samples were (0.19%) found positive for STEC, with none of these cases found in fruit (n=2774) or juice (n=317) samples. Based on this data, the initial contamination will be defined as the concentration of *E. coli* in the fruit juice tank after the juice is extracted from the fruit. According to @gayan_selection_2014, the performance objective (PO) for enteric pathogens suggests that the contamination of *E. coli* O157:H7 in freshly pressed apple juice before pasteurization must not exceed 10 CFU/ml. Therefore, we assume that the initial concentration is 10 CFU/ml.
+
+## Inactivation using different processing technologies
+
+The meta-analysis (meta-regression) approach was used for all cases to quantitatively integrate the findings from numerous individual studies [Den @den_besten_meta-analysis_2012] for estimating the inactivation achieved by the different food processing technologies i.e., thermal pasteurization (TP), high-pressure processing (HPP), pulsed electric fields (PEF), ultrasound (US), and non-thermal plasma (NTP). For NTP, the plasma device was assumed to be a dielectric-barrier discharge (DBD) device, because, as explained in the deliverable 10.2., it is the most commonly used device in the existing literature. Consequently, the inactivation models used to assess the microbial population after processing were based on a log-linear primary inactivation model (@eq-primary).
+
+$$
+\log_{10}N = \log_{10}N_0 - \frac{{\ t}}{{\ D}}
+$$ {#eq-primary}
+
+where $log_{10}N_0$ is the initial microbial log~10~ counts, $log_{10}N$ is the microbial log~10~ counts after treatment, $t$ is the treatment time (s), and $D$ the time (s) needed for 1 log~10~ reduction of the microbial population.
+
+In order to more accurately describe the processing conditions and assess the effect of a numerical parameter of interest on the *D*-value, a log-linear secondary model was also used. For example for TP, the effect of the temperature on the inactivation was described from @eq-secondary.
+
+$$
+\log_{10}D = \log_{10}D_{ref} + \frac{(T_{ref} - T)}{z}
+$$ {#eq-secondary}
+
+where $D_{ref}$ is the $D$ at a reference temperature $T_{ref}$ (ºC), $T$ is the treatment temperature (ºC), and $z$ is the temperature change (ºC) needed for 1 log~10~ reduction of the $D$.
+
+The $D_{ref}$ and $z$ parameters for *E. coli* and high-acidic fruit juices were obtained from the dataset of Van @van_asselt_systematic_2006. The transformed equation using these parameters is presented in @eq-sec-tp.
+
+$$
+\log_{10}D = -1.77 + \frac{(70 - T)}{5.6}
+$$ {#eq-sec-tp}
+
+For HPP the equivalent approach was implemented using the $D_{ref}$ and $z_{P}$ (the pressure change needed for 1 log~10~ reduction of the $D$) parameters, which were estimated from the specific linear model presented in deliverable 10.2 for *E. coli* and high-acidic fruit juices. The $P_{ref}$ was set at 500 MPa (@eq-sec-hpp).
+
+$$
+\log_{10}D = -0.32 + \frac{(500 - P)}{270}
+$$ {#eq-sec-hpp}
+
+For PEF, it was not necessary to define a secondary model. Instead, a primary model was used with energy input ($E_{in}$ in kJ/L) as the equivalent of time *t* and the $D_{Ein}$ (kJ/L) parameter i.e., the energy input needed for 1 log~10~ reduction of the microbial population, as the equivalent of the *D*-value (@eq-prim-pef).
+
+$$
+\log_{10}N = \log_{10}N_0 - 0.73 - \frac{E_{in}}{40}
+$$ {#eq-prim-pef}
+
+where 0.73 was the intercept of the linear regression model. @eq-prim-pef is the same equation that was presented in the deliverable 10.2 but following a transformation, where the reductions at the reference energy input level of $120 kJ/L$ and the energy input needed to achieve 1 log~10~ reduction of the microbial population, were used to re-write the equation as shown above.
+
+For non-thermal plasma (NTP), and ultrasounds (US), direct comparison was not possible because the simple linear models developed, as explained in the deliverable 10.2. could not adequately explain the variability. Therefore, multiple linear regression (for US and NTP) with more than one independent variable, or more complex approaches such as machine learning (for NTP) were implemented. The secondary multiple linear regression models that were explained in the deliverable 10.2. were used for both cases but in their unscaled version.
+
+Although a range of processing conditions for microbial inactivation has been defined for TP, HPP, and PEF, such a range could not be established for NTP and US based on the literature. This is crucial because, without predefined parameter values, the efficacy of each technology cannot be meaningfully compared. To better understand the efficacy of each technology, we used three methods: i., comparison based on median values; ii., parameter adjustment to achieve a 5-log~10~ reduction; iii., comparison based on the same energy usage. First, we compared the total reductions achieved using the median value of each parameter. This approach allows for a rough estimate of the reductions that can be achieved based on the central tendency of the parameter values reported in the literature. Then, we adjusted the parameter values for each technology to achieve a 5-log~10~ reduction, the target set by the United States Food & Drug Administration (US-FDA) for the pertinent microorganism that is likely to occur in fruit juices (e.g., *E. coli* O157:H7) [@us_fda_guidance_2024]. With this method, experts in the technology can assess whether a 5-log~10~ reduction is feasible based on their processing equipment's parameters. For the third method, we used energy usage to compare the achieved reductions on the same basis. This approach was only possible for TP, HPP, and PEF, where sufficient literature existed. To make the comparisons more straightforward, the processing time for all technologies was set to 1 minute. The pH was assumed to be 3.6, a typical pH value of apple juice. [@noauthor_pathogen_nodate]. The level of 10 CFU of *E. coli* O157:H7 per milliliter of apple juice with 100% prevalence was used for the initial contamination of the fruit juice before processing.
+
+# Results and discussion
+
+## Achieved reductions based on median and commonly reported values in the literature
+
+The median values of temperature and pressure for TP and HPP were 58 ºC, and 300 MPa, respectively. For PEF, the median energy input was 79.5 kJ/L. For US, the median ultrasonic intensity value was 85 W/cm^2^ and the median temperature was 25 ºC. For NTP, a plate electrode shape was assumed as it was the most frequently used category. The median sample area and power density values were 19.6 cm^2^ (under the assumption that the apple juice was spread on the surface of the ground electrode of the DBD device) and 0.37 W/cm^3^, respectively. Using the aforementioned values in the models, the corresponding *D*-values for TP, HPP, US, and NTP, were estimated. These *D*-values, along with a processing time of 1 minute, were then applied in @eq-primary to estimate the microbial reductions ($\log_{10}N_0 - \log_{10}N$). For PEF, @eq-prim-pef was directly used to estimate the microbial reductions. The achieved log~10~ reductions were: i., 2.4 (TP); ii., 2.6 (HPP); iii., 2.7 (PEF), iv., 0.09 (US); v., 0.09 (NTP). Given the initial contamination of the fruit juice of 10 CFU/ml and a prevalence of 100%, this can be translated in a microbial concentration of *E. coli* O157:H7 in the apple juice after processing of -1.4, - 1.6, -1.7, 0.91, and 0.91 log~10~ CFU/ml, respectively. Although this approach provided some insights regarding the central tendency of the reported parameters in the literature and their corresponding reductions, it cannot be used to evaluate the overall efficacy of a technology. This is because the median values in a database are not necessarily realistic for industrial applications. For example, typical pasteurization conditions of milk involve processing at 72 ºC for 15-20 seconds, which would result in 33.5 and 44.7 log~10~ reductions in the apple juice, respectively. According to the FDA, processing at \>160 F (71.11 ºC) for 6 seconds can achieve a 5-log~10~ reduction of *E. coli* O157:H7 in apple juice [@us_fda_guidance_2024], which also aligns with the current meta-regression model which estimates 9.3 log~10~ reductions, under the same conditions. For HPP, 1 minute of processing in 550 MPa would result in 3.2 log~10~ reductions, while 600 MPa would result in 4.9 log~10~ reductions. According to @aganovic_environmental_2022, the energy input levels for treating heat-sensitive liquids typically range between 80-120 kJ/kg (or 82-124 kJ/L, assuming an apple juice density of 1.03 kg/L [@rydzak_analysis_2020]). Using the meta-regression model for PEF in high-acidic fruit juices with *E. coli* this energy input would translate to 2.8-3.8 log~10~ reductions.
+
+## Relevant combinations of parameters to achieve a 5-log~10~ reduction
+
+The 5-log~10~ reduction goal, in the case of an initial concentration of 10 CFU of *E. coli* O157:H7 per milliliter of apple juice with 100% prevalence could be translated to 1 CFU of *E. coli* O157:H7 in 10 L of apple juice after processing, which might still pose a non-acceptable food safety risk. However, based on the findings of @efsa_urgent_2011 the prevalence of *E. coli* O157:H7 can be close to 0%, making the 5-log~10~ reduction goal sufficiently robust. To achieve a 5-log~10~ reduction, multiple parameters could be adjusted based on the technology of interest. For example for TP a thermal profile of 70 ºC for 5.1 seconds would be sufficient to achieve a 5-log~10~ reduction, or a thermal profile of 67.4 ºC for 15 seconds. For HPP, a combination of 550 MPa and 1.6 minutes would achieve a 5-log~10~ reduction, as would a combination of 600 MPa and 1.02 minutes. For US, if the apple juice was treated at 25 ºC and the ultrasonic intensity was set at 85 W/cm^2^, 56.7 minutes of processing would be needed to achieve a 5-log~10~ reduction. To maintain the processing time in 1 minute with an inlet temperature of 25 ºC, an ultrasonic intensity of 847 W/cm^2^ would be required. Another scenario would involve adjusting the temperature to 35 ºC with pre-treatment and treating the product for 5 minutes, in which case an ultrasonic intensity of 483 W/cm^2^ would be needed. For NTP, the adjustable processing parameters are the power intensity and the processing time. Keeping all parameters at their median values, as explained above, 58.7 minutes of processing would be required. To reduce the processing time to 1 minute, a power density value of 1.55 W/cm^3^ would be needed to achieve a 5-log~10~ reduction. Alternatively, a processing time of 5 minutes combined with a power density of 1.08 W/cm^3^, could also provide a 5-log~10~ reduction. Lastly, for PEF an energy input of 171 kJ/L would be required to achieve the 5-log~10~ reduction.
+
+## Comparison of the achieved reductions on an energy usage basis
+
+For NTP, and US there is no available literature comparing these technologies with TP. Therefore, the comparison based on energy usage only included TP, HPP, and PEF. According to @aganovic_pilot_2017, treating tomato juice at 74 ºC for 30 seconds requires 137 kJ/L. For HPP, a treatment of 600 MPa for 5 minutes requires 652 kJ/L, while PEF treatment at 188 kJ/kg (or 194 kJ/L, assuming a density of 1.03 kg/L) requires 433 kJ/L, including the electricity losses. According to the meta-regression models developed, these energy usage levels would result in 152, 24.5, and 5.6 log~10~ reductions, for TP, HPP, and PEF, respectively. Consequently, to achieve a 5-log~10~ reduction, the required energy usage levels would be 4.5 kJ/L for TP, 133 kJ/L for HPP, and 387 kJ/L for PEF. It should be noted that these energy usage estimates to achieve 5-log~10~ reduction implies a linear relationship between energy usage and processing time for TP and HPP, and between energy usage and energy input for PEF, which although in principle should be a valid approach, may not be entirely accurate (e.g., HPP includes stable compression and decompression times in addition to the holding time (processing time) that also consume energy).
+
+## Additional considerations regarding decontamination efficacy and up-scaling capabilities of the different technologies
+
+Besides decontamination efficacy, the up-scaling capabilities of the different non-thermal technologies also vary, affecting their applicability. For instance, HPP is already used in the food industry for refrigerated fruit juices in batch mode (treated inside plastic bottles), whereas PEF could be implemented in continuous mode, which is generally preferable for industrial applications. However, in PEF the thermal effect cannot be fully excluded when high levels of energy input are applied. With a heat capacity of approximately 4 J/kg·ºC, an energy input of 200 kJ/kg would increase the temperature by about 50 ºC for micro- to milli-seconds, depending on the setup. The up-scaling capabilities of US are not yet clear. Currently, the data collected for model development were at lab-scale, with experiments applied in batch mode and the ultrasonic probe placed inside the treatment matrix leading to higher processing temperatures. For NTP, the developed multiple linear regression model was based on a DBD setup and with direct treatment of the target matrix, where liquid matrices were spread on the ground electrode for treatment. Thus, NTP, in its current form, may not be suitable for up-scaling in the fruit juice industry but could be more appropriate for other applications such as solid food surfaces and packages [@liao_inactivation_2017]. From our analysis, TP appeared to require less energy than HPP and PEF aligning with existing literature [@aganovic_pilot_2017; @cacace_evaluation_2020; @atuonwu_comparative_2018]. However, despite HPP's higher energy usage, TP often relies on steam generated by burning methane in industrial processes, possibly making it less sustainable overall [@cacace_evaluation_2020]. Our results show that PEF involves higher energy usage to achieve 5-log~10~ reduction when compared to HPP, contrary to the study of @aganovic_pilot_2017. This discrepancy may be due to different experimental conditions, such as the inlet temperature set at 30 ºC for tomato juice and the lower electric field strength of 9.8 kV/cm used by @aganovic_pilot_2017. The conductivity of tomato juice differs from apple juice and varies with temperature. All these differences can lead to different estimations of the energy input absorbed from the food product as shown by @rodriguez-gonzalez_energy_2015.
+
+{{< pagebreak >}}
+
+# Conclusion
+
+The QMRA results indicated that decontamination efficacy varies between technologies, and the lack of information on feasible parameter values for US and NTP limits a precise comparison of their efficacy. Although all technologies can achieve at least a 5-log~10~ reduction of *E. coli* in apple juice by selecting appropriate processing parameters, not all technologies show the same efficacy under identical energy usage conditions. TP seemed to be the most energy efficient processing technology followed by HPP and PEF, while a comparison was not possible with US and NTP. However, TP was also the most optimized technology incorporating heat recovery procedures. These comparisons will become more meaningful as more scientific findings regarding the energy usage of the different technologies under various conditions and at the same processing scale are produced. Notably, the best combinations of parameters highlighted in this work can guide on achieving the desired microbial reductions (e.g., 5-log~10~ reduction) using the studied technologies; thereby ensuring that non-thermal (or minimally thermal) treated apple juice is just as safe as thermally pasteurized.
+
+{{< pagebreak >}}
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
